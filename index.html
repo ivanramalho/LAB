@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@300;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+
+    <!-- Login / Project Entry Screen -->
+    <div id="login-screen" class="login-overlay">
+        <div class="login-box">
+            <div class="logo-large">CREATIVE LAB</div>
+
+            <!-- Step 1: User Name -->
+            <div id="login-step-1">
+                <p class="login-subtitle">Who is creating today?</p>
+                <form id="user-form">
+                    <input type="text" id="user-name" placeholder="Your Name (e.g., Alice)" required autocomplete="off">
+                    <button type="submit" class="btn-primary">Next</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Project Name -->
+            <div id="login-step-2" class="hidden">
+                <p class="login-subtitle">Which project are you working on?</p>
+                <form id="project-form">
+                    <input type="text" id="project-name" placeholder="Project Name (e.g., Nike Ads)" required
+                        autocomplete="off">
+                    <button type="submit" class="btn-primary">Enter Lab</button>
+                    <button type="button" id="back-to-user" class="btn-text-only"
+                        style="margin-top: 10px; background: none; border: none; color: #666; cursor: pointer;">Back</button>
+                </form>
+
+                <div id="recent-projects-container" class="hidden">
+                    <p class="recent-label">Recent Projects:</p>
+                    <div id="recent-projects-list" class="chips-container">
+                        <!-- Dynamic Chips -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="app-header hidden"> <!-- Hidden initially -->
+        <div class="logo"><span class="highlight">CREATIVE LAB</span> <span id="current-project-display"
+                class="project-tag"></span></div>
+        <nav>
+            <button class="nav-btn active" data-tab="concepts">Concepts</button>
+            <button class="nav-btn" data-tab="scripts">Scripts</button>
+            <button id="switch-project-btn" class="btn-text-only"
+                style="margin-left: 15px; font-size: 0.8rem; color: var(--accent-color); opacity: 0.8;">Switch
+                Project</button>
+        </nav>
+    </header>
+
+    <main class="app-main hidden"> <!-- Hidden initially -->
+        <!-- Campaign Concepts Section -->
+        <section id="concepts" class="tab-content active">
+            <div class="container">
+                <div class="input-panel">
+                    <h2>New Campaign Concept</h2>
+                    <form id="concept-form">
+                        <div class="form-group">
+                            <label for="concept-title">Campaign Title</label>
+                            <input type="text" id="concept-title" placeholder="e.g., Summer Refresh" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="concept-desc">Description</label>
+                            <textarea id="concept-desc" placeholder="Describe the core idea..." rows="4"
+                                required></textarea>
+                        </div>
+                        <!-- Removed Manual Rating -->
+
+                        <div class="form-actions">
+                            <button type="button" id="enhance-btn" class="btn-magic">
+                                <span class="btn-text">✨ Enhance Idea</span>
+                                <span class="btn-loader"></span>
+                            </button>
+                            <button type="button" id="analyze-btn" class="btn-secondary">
+                                <span class="btn-text">Analyze Concept</span>
+                                <span class="btn-loader"></span>
+                            </button>
+                            <!-- Save button hidden until analysis is done -->
+                            <button type="submit" id="save-concept-btn" class="btn-primary" style="display: none;">Save
+                                to Collection</button>
+                        </div>
+                    </form>
+
+                    <!-- AI Analysis Result -->
+                    <div id="analysis-result" class="analysis-card hidden">
+                        <div class="analysis-header">
+                            <h3>AI Analysis Result</h3>
+                            <div class="score-circle">
+                                <span id="ai-score">0.0</span>
+                                <span class="score-label">/ 10</span>
+                            </div>
+                        </div>
+                        <div class="analysis-body">
+                            <p id="ai-feedback">Analyzing...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="display-panel">
+                    <h2>Saved Concepts</h2>
+                    <div id="concepts-list" class="grid-list">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Commercial Scripts Section -->
+        <section id="scripts" class="tab-content">
+            <div class="container">
+                <div class="input-panel">
+                    <h2>New Commercial Script</h2>
+                    <form id="script-form">
+                        <div class="form-group">
+                            <label for="script-title">Title</label>
+                            <input type="text" id="script-title" placeholder="e.g., The Chase" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="script-logline">Logline / Concept</label>
+                            <input type="text" id="script-logline" placeholder="Quick summary..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="script-body">Script Body</label>
+                            <textarea id="script-body" placeholder="INT. OFFICE - DAY..." rows="10" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Save Script</button>
+                    </form>
+                </div>
+
+                <div class="display-panel">
+                    <h2>Saved Scripts</h2>
+                    <div id="scripts-list" class="list-layout">
+                        <!-- Dynamic Content -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
