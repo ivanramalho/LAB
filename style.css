@@ -257,13 +257,13 @@ header {
 }
 
 .project-tag {
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(8, 217, 214, 0.1);
     color: var(--accent-color);
     padding: 0.3rem 1rem;
     border-radius: 100px;
     font-size: 0.7rem;
     font-weight: 600;
-    border: 1px solid rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(8, 217, 214, 0.2);
     margin-left: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -295,7 +295,7 @@ nav {
 
 .nav-btn.active {
     color: #fff;
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(8, 217, 214, 0.1);
 }
 
 .nav-btn.active::after {
@@ -809,18 +809,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .login-box {
-    background: transparent;
-    border: none;
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
     text-align: center;
-    max-width: 1000px;
-    /* Wider for a hero feel */
-    width: 95%;
-    padding: 2rem;
-    animation: fadeIn 1.2s ease, float 6s ease-in-out infinite;
+    max-width: 500px;
+    width: 90%;
+    padding: 3.5rem 2.5rem;
+    animation: fadeIn 1.2s ease;
     position: relative;
     z-index: 10;
-    backdrop-filter: none;
-    box-shadow: none;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(8, 217, 214, 0.1);
 }
 
 @keyframes float {
@@ -838,9 +838,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .logo-large {
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 4.5rem;
-    letter-spacing: -2px;
-    margin-bottom: 1.5rem;
+    font-size: 3rem;
+    letter-spacing: -1px;
+    margin-bottom: 2rem;
     background: linear-gradient(to bottom, #fff 40%, rgba(255, 255, 255, 0.4));
     -webkit-background-clip: text;
     background-clip: text;
@@ -885,8 +885,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 #user-form input:focus,
 #project-form input:focus {
     border-color: var(--accent-color);
-    background: rgba(168, 85, 247, 0.05);
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+    background: rgba(8, 217, 214, 0.05);
+    box-shadow: 0 0 30px rgba(8, 217, 214, 0.2);
     outline: none;
     transform: scale(1.02);
 }
@@ -900,15 +900,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     /* Subtly larger */
 }
 
-.project-tag {
-    font-size: 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    color: var(--text-secondary);
-    margin-left: 10px;
-    vertical-align: middle;
-}
 
 /* Enhance Button */
 .btn-magic {
