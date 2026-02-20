@@ -125,40 +125,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Recent Projects Logic
     function getRecentProjects() {
-        return JSON.parse(localStorage.getItem('creativeLab_recentProjects')) || [];
+        if (!currentUser) return [];
+        return JSON.parse(localStorage.getItem(`creativeLab_${currentUser}_recentProjects`)) || [];
     }
 
     function addToRecents(projectName) {
+        if (!currentUser) return;
         let recents = getRecentProjects();
         // Remove if exists (to move to top)
         recents = recents.filter(p => p.toLowerCase() !== projectName.toLowerCase());
         // Add to top
         recents.unshift(projectName);
-        // Limit to 5
-        if (recents.length > 5) recents.pop();
+        // Limit to 10
+        if (recents.length > 10) recents.pop();
 
-        localStorage.setItem('creativeLab_recentProjects', JSON.stringify(recents));
+        localStorage.setItem(`creativeLab_${currentUser}_recentProjects`, JSON.stringify(recents));
     }
 
     function renderRecentProjects() {
-        // Scan ALL localStorage keys to find every project ever created
+        if (!currentUser) return;
+
+        // Scan ALL localStorage keys to find projects OWNED by current user
         const allProjects = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key.startsWith('creativeLab_project_')) {
-                // Extract project name from key: creativeLab_project_name_concepts
-                const parts = key.split('_');
-                if (parts.length >= 3) {
-                    const name = parts[2];
-                    if (!allProjects.includes(name)) allProjects.push(name);
+            if (key.startsWith('creativeLab_project_') && key.endsWith('_owner')) {
+                const owner = localStorage.getItem(key);
+                if (owner === currentUser) {
+                    const normalizedName = key.replace('creativeLab_project_', '').replace('_owner', '');
+                    // We need the display name. Let's look for concepts or scripts to find capitalization, 
+                    // or just use the normalized name for the chip.
+                    if (!allProjects.includes(normalizedName)) allProjects.push(normalizedName);
                 }
             }
         }
 
-        // Also include the 'recents' list to maintain order/completeness
+        // Include the user-specific 'recents' list
         const recents = getRecentProjects();
         recents.forEach(p => {
-            if (!allProjects.includes(p.toLowerCase())) allProjects.push(p);
+            if (!allProjects.includes(p.toLowerCase())) allProjects.push(p.toLowerCase());
         });
 
         if (allProjects.length === 0) {
@@ -187,6 +192,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function enterLab(projectName) {
+        const normalizedName = projectName.trim().toLowerCase();
+        const ownerKey = `creativeLab_project_${normalizedName}_owner`;
+        const existingOwner = localStorage.getItem(ownerKey);
+
+        if (existingOwner && existingOwner !== currentUser) {
+            alert(`Access Denied: This workspace belongs to ${existingOwner}.`);
+            return;
+        }
+
+        // Set ownership if new
+        if (!existingOwner) {
+            localStorage.setItem(ownerKey, currentUser);
+        }
+
         currentProject = projectName;
         addToRecents(currentProject); // Save to history
         localStorage.setItem('creativeLab_lastProject', currentProject);
