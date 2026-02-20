@@ -5,6 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('mousemove', (e) => {
         const { clientX, clientY } = e;
+
+        // Spotlight Variables
+        const mouseX = (clientX / window.innerWidth) * 100;
+        const mouseY = (clientY / window.innerHeight) * 100;
+        document.documentElement.style.setProperty('--mouse-x', `${mouseX}%`);
+        document.documentElement.style.setProperty('--mouse-y', `${mouseY}%`);
+
+        // Parallax Effects
         const x = (clientX / window.innerWidth - 0.5) * 40;
         const y = (clientY / window.innerHeight - 0.5) * 40;
 
