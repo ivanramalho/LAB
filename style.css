@@ -1,20 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
 
 :root {
-    --bg-color: #050508;
-    --surface-color: #0a0a0f;
+    --bg-color: #0c0c0e;
+    --surface-color: #141416;
     --text-primary: #ffffff;
-    --text-secondary: #94a3b8;
-    --accent-color: #08d9d6;
-    /* Teal */
-    --accent-hover: #ff5f6d;
-    /* Coral */
-    --accent-blue: #00d2ff;
-    /* Cyan/Blue */
-    --portal-glow: #08d9d6;
-    --border-color: rgba(255, 255, 255, 0.05);
-    --glass-bg: rgba(10, 10, 15, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.12);
+    --text-secondary: #a0a0a5;
+    --accent-color: #E50914;
+    /* yesHEis Red */
+    --accent-hover: #b90710;
+    --accent-blue: #ffffff;
+    --portal-glow: rgba(229, 9, 20, 0.3);
+    --border-color: rgba(255, 255, 255, 0.03);
+    --glass-bg: rgba(18, 18, 20, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
     --font-heading: 'Outfit', sans-serif;
     --font-serif: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
@@ -51,9 +49,9 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(255, 255, 255, 0.15) 0%,
-            rgba(8, 217, 214, 0.12) 25%,
-            transparent 60%);
+            rgba(255, 255, 255, 0.04) 0%,
+            rgba(229, 9, 20, 0.015) 35%,
+            transparent 75%);
     pointer-events: none;
     z-index: 1;
     mix-blend-mode: screen;
@@ -95,10 +93,10 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 50% 50% 0 0;
-    background: linear-gradient(0deg, transparent, var(--accent-color), var(--accent-blue));
-    filter: blur(80px);
-    opacity: 0.15;
-    /* Dimmed by default */
+    background: linear-gradient(0deg, transparent, var(--portal-glow));
+    filter: blur(100px);
+    opacity: 0.1;
+    /* Very subtle */
 }
 
 .portal-flare {
@@ -131,8 +129,8 @@ body {
     position: absolute;
     border-radius: 50%;
     filter: blur(140px);
-    opacity: 0.05;
-    /* Very dimmed by default */
+    opacity: 0.02;
+    /* Even more dimmed */
     transition: transform 0.2s cubic-bezier(0.1, 0.7, 1.0, 0.1);
     pointer-events: none;
 }
@@ -219,7 +217,7 @@ header {
 
 #switch-project-btn:hover {
     transform: scale(1.02);
-    filter: brightness(1.2);
+    filter: brightness(1.1);
 }
 
 #switch-project-btn:active {
@@ -227,6 +225,10 @@ header {
 }
 
 .brand-logomark {
+    display: inline-flex;
+    position: relative;
+    width: 40px;
+    height: 40px;
     animation: float-icon 4s ease-in-out infinite;
 }
 
@@ -238,14 +240,8 @@ header {
     }
 
     50% {
-        transform: translateY(-5px) rotate(5deg);
+        transform: translateY(-3px) rotate(3deg);
     }
-}
-
-.brand-logomark.sm {
-    animation: none;
-    transform: scale(0.6);
-    margin-right: -10px;
 }
 
 .highlight {
@@ -257,13 +253,13 @@ header {
 }
 
 .project-tag {
-    background: rgba(8, 217, 214, 0.1);
+    background: rgba(229, 9, 20, 0.1);
     color: var(--accent-color);
     padding: 0.3rem 1rem;
     border-radius: 100px;
     font-size: 0.7rem;
     font-weight: 600;
-    border: 1px solid rgba(8, 217, 214, 0.2);
+    border: 1px solid rgba(229, 9, 20, 0.15);
     margin-left: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -295,7 +291,7 @@ nav {
 
 .nav-btn.active {
     color: #fff;
-    background: rgba(8, 217, 214, 0.1);
+    background: rgba(229, 9, 20, 0.1);
 }
 
 .nav-btn.active::after {
@@ -441,9 +437,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Buttons */
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent-color), var(--accent-blue));
-    color: #000;
-    /* Contrast for light teal/blue */
+    background: linear-gradient(135deg, var(--accent-color), #8b0000);
+    color: #fff;
     border: none;
     padding: 1rem 2.5rem;
     border-radius: 100px;
@@ -453,12 +448,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
     cursor: pointer;
     width: 100%;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 20px rgba(8, 217, 214, 0.2);
+    box-shadow: 0 10px 20px rgba(229, 9, 20, 0.15);
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(8, 217, 214, 0.4);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 15px 30px rgba(229, 9, 20, 0.25);
     filter: brightness(1.1);
 }
 
@@ -518,7 +513,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     padding: 1px;
     /* The border width */
     background: radial-gradient(circle at var(--rel-x) var(--rel-y),
-            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.15) 0%,
             transparent 50%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
