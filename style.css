@@ -1,21 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
-
 :root {
-    --bg-color: #202123;
-    /* yesHEis Coal */
-    --surface-color: #2b2c2f;
+    --bg-color: #121214;
+    --surface-color: #1a1a1c;
     --text-primary: #ffffff;
-    --text-secondary: #94a3b8;
-    --accent-color: #ff7262;
-    /* yesHEis Salmon */
-    --accent-hover: #e06557;
-    --accent-blue: #ffffff;
-    --portal-glow: rgba(255, 114, 98, 0.15);
-    --border-color: rgba(255, 255, 255, 0.05);
-    --glass-bg: rgba(32, 33, 35, 0.7);
+    --text-secondary: #94bc9b;
+    /* Subtle green-tinted grey */
+    --accent-color: #11da8f;
+    /* yesHEis Green */
+    --accent-hover: #0fb878;
+    --accent-blue: #21beff;
+    --portal-glow: rgba(17, 218, 143, 0.15);
+    --border-color: rgba(255, 255, 255, 0.04);
+    --glass-bg: rgba(20, 20, 22, 0.7);
     --glass-border: rgba(255, 255, 255, 0.08);
     --font-heading: 'Outfit', sans-serif;
-    --font-serif: 'Playfair Display', serif;
+    --font-serif: 'Outfit', sans-serif;
+    /* Unified font */
     --font-body: 'Inter', sans-serif;
 }
 
@@ -50,8 +49,8 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(255, 255, 255, 0.03) 0%,
-            rgba(255, 114, 98, 0.01) 30%,
+            rgba(255, 255, 255, 0.04) 0%,
+            rgba(17, 218, 143, 0.02) 30%,
             transparent 80%);
     pointer-events: none;
     z-index: 1;
@@ -185,37 +184,6 @@ header {
     transition: all 0.3s ease;
 }
 
-.brand-logomark {
-    display: inline-flex;
-    position: relative;
-    width: 40px;
-    height: 40px;
-}
-
-.brand-logomark::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 14px;
-    height: 14px;
-    background: var(--accent-color);
-    border-radius: 50%;
-}
-
-.brand-logomark::after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 14px;
-    width: 28px;
-    height: 14px;
-    background: linear-gradient(to right, #fff, var(--accent-color));
-    border-radius: 100px;
-    transform: rotate(-45deg);
-    opacity: 0.8;
-}
-
 #switch-project-btn:hover {
     transform: scale(1.02);
     filter: brightness(1.1);
@@ -223,26 +191,6 @@ header {
 
 #switch-project-btn:active {
     transform: scale(0.98);
-}
-
-.brand-logomark {
-    display: inline-flex;
-    position: relative;
-    width: 40px;
-    height: 40px;
-    animation: float-icon 4s ease-in-out infinite;
-}
-
-@keyframes float-icon {
-
-    0%,
-    100% {
-        transform: translateY(0) rotate(0);
-    }
-
-    50% {
-        transform: translateY(-3px) rotate(3deg);
-    }
 }
 
 .highlight {
@@ -254,13 +202,13 @@ header {
 }
 
 .project-tag {
-    background: rgba(255, 114, 98, 0.08);
+    background: rgba(17, 218, 143, 0.08);
     color: var(--accent-color);
     padding: 0.4rem 1.2rem;
     border-radius: 100px;
     font-size: 0.75rem;
     font-weight: 700;
-    border: 1px solid rgba(255, 114, 98, 0.15);
+    border: 1px solid rgba(17, 218, 143, 0.15);
     text-transform: uppercase;
     letter-spacing: 1.5px;
     backdrop-filter: blur(5px);
@@ -268,7 +216,7 @@ header {
 }
 
 .project-tag:hover {
-    background: rgba(255, 114, 98, 0.15);
+    background: rgba(17, 218, 143, 0.15);
     border-color: var(--accent-color);
     transform: scale(1.02);
 }
@@ -444,13 +392,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Buttons */
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent-color), #d15a4e);
-    color: #fff;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-blue));
+    color: #000;
     border: none;
     padding: 0.8rem 2rem;
     border-radius: 100px;
     font-family: var(--font-heading);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.95rem;
     cursor: pointer;
     width: 100%;
@@ -460,7 +408,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(255, 114, 98, 0.15);
+    box-shadow: 0 12px 25px rgba(17, 218, 143, 0.2);
     filter: brightness(1.05);
 }
 
@@ -894,12 +842,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .luxury-text {
-    font-family: var(--font-serif);
-    font-style: italic;
+    font-family: var(--font-heading);
     color: #fff;
-    font-weight: 400;
+    font-weight: 700;
     font-size: 1.1em;
-    /* Subtly larger */
 }
 
 
