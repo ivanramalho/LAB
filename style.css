@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
 
 :root {
-    --bg-color: #020205;
-    --surface-color: #08080c;
+    --bg-color: #050508;
+    --surface-color: #0a0a0f;
     --text-primary: #ffffff;
-    --text-secondary: #8e8ea8;
-    --accent-color: #a855f7;
-    --accent-hover: #c084fc;
-    --portal-glow: #7c3aed;
+    --text-secondary: #94a3b8;
+    --accent-color: #08d9d6;
+    /* Teal */
+    --accent-hover: #ff5f6d;
+    /* Coral */
+    --accent-blue: #00d2ff;
+    /* Cyan/Blue */
+    --portal-glow: #08d9d6;
     --border-color: rgba(255, 255, 255, 0.05);
     --glass-bg: rgba(10, 10, 15, 0.7);
     --glass-border: rgba(255, 255, 255, 0.12);
@@ -47,8 +51,8 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(255, 255, 255, 0.25) 0%,
-            rgba(168, 85, 247, 0.2) 20%,
+            rgba(255, 255, 255, 0.15) 0%,
+            rgba(8, 217, 214, 0.12) 25%,
             transparent 60%);
     pointer-events: none;
     z-index: 1;
@@ -91,7 +95,7 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 50% 50% 0 0;
-    background: linear-gradient(0deg, transparent, var(--portal-glow));
+    background: linear-gradient(0deg, transparent, var(--accent-color), var(--accent-blue));
     filter: blur(80px);
     opacity: 0.15;
     /* Dimmed by default */
@@ -136,7 +140,7 @@ body {
 .orb-1 {
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
     top: -300px;
     right: -200px;
 }
@@ -144,7 +148,7 @@ body {
 .orb-2 {
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, #7e22ce 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent-hover) 0%, transparent 70%);
     bottom: -100px;
     left: -100px;
 }
@@ -152,7 +156,7 @@ body {
 .orb-3 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+    background: radial-gradient(circle, var(--accent-blue) 0%, transparent 70%);
     top: 20%;
     left: 30%;
     opacity: 0.1;
@@ -179,8 +183,38 @@ header {
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.8rem;
     transition: all 0.3s ease;
+}
+
+.brand-logomark {
+    display: inline-flex;
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+.brand-logomark::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    background: var(--accent-hover);
+    border-radius: 50%;
+}
+
+.brand-logomark::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 14px;
+    width: 28px;
+    height: 14px;
+    background: linear-gradient(to right, var(--accent-color), var(--accent-blue));
+    border-radius: 100px;
+    transform: rotate(-45deg);
 }
 
 #switch-project-btn:hover {
@@ -192,9 +226,34 @@ header {
     transform: scale(0.98);
 }
 
+.brand-logomark {
+    animation: float-icon 4s ease-in-out infinite;
+}
+
+@keyframes float-icon {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+    }
+}
+
+.brand-logomark.sm {
+    animation: none;
+    transform: scale(0.6);
+    margin-right: -10px;
+}
+
 .highlight {
     font-family: var(--font-heading);
-    color: var(--accent-color);
+    background: linear-gradient(to right, var(--accent-color), var(--accent-blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .project-tag {
@@ -382,23 +441,24 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Buttons */
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent-color), #7c3aed);
-    color: #fff;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-blue));
+    color: #000;
+    /* Contrast for light teal/blue */
     border: none;
     padding: 1rem 2.5rem;
     border-radius: 100px;
     font-family: var(--font-heading);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
     width: 100%;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 10px 20px rgba(8, 217, 214, 0.2);
 }
 
 .btn-primary:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(124, 58, 237, 0.5);
+    box-shadow: 0 15px 30px rgba(8, 217, 214, 0.4);
     filter: brightness(1.1);
 }
 
@@ -742,7 +802,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(8, 217, 214, 0.15) 0%, transparent 70%);
     filter: blur(100px);
     z-index: -1;
     pointer-events: none;
@@ -785,6 +845,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
 }
 
 .login-subtitle {
