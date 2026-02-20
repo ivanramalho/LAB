@@ -96,8 +96,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderRecentProjects() {
+        // Scan ALL localStorage keys to find every project ever created
+        const allProjects = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('creativeLab_project_')) {
+                // Extract project name from key: creativeLab_project_name_concepts
+                const parts = key.split('_');
+                if (parts.length >= 3) {
+                    const name = parts[2];
+                    if (!allProjects.includes(name)) allProjects.push(name);
+                }
+            }
+        }
+
+        // Also include the 'recents' list to maintain order/completeness
         const recents = getRecentProjects();
-        if (recents.length === 0) {
+        recents.forEach(p => {
+            if (!allProjects.includes(p.toLowerCase())) allProjects.push(p);
+        });
+
+        if (allProjects.length === 0) {
             recentProjectsContainer.classList.add('hidden');
             return;
         }
@@ -105,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         recentProjectsContainer.classList.remove('hidden');
         recentProjectsList.innerHTML = '';
 
-        recents.forEach(proj => {
+        allProjects.forEach(proj => {
             const chip = document.createElement('div');
             chip.className = 'recent-chip';
             chip.textContent = proj;
@@ -186,7 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         renderConcepts();
 
-        // Enhance Idea (Simulated AI)
+        // Enhance Idea (New Two-Step Workflow)
+        const enhanceProposal = document.getElementById('enhance-proposal');
+        const proposedTextElem = document.getElementById('proposed-text');
+        const applyEnhanceBtn = document.getElementById('apply-enhancement');
+        const discardEnhanceBtn = document.getElementById('discard-enhancement');
+
         enhanceBtn.addEventListener('click', () => {
             const descInput = document.getElementById('concept-desc');
             const desc = descInput.value.trim();
@@ -196,48 +220,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // UI Loading
             enhanceBtn.classList.add('loading');
             enhanceBtn.disabled = true;
 
             setTimeout(() => {
-                const enhancedText = performOptimization(desc);
-                descInput.value = enhancedText;
+                const enhancedText = performProfessionalOptimization(desc);
+                proposedTextElem.value = enhancedText;
 
-                // Visual Highlight effect
-                descInput.style.borderColor = 'var(--accent-color)';
-                descInput.style.boxShadow = '0 0 10px rgba(138, 43, 226, 0.3)';
-                setTimeout(() => {
-                    descInput.style.borderColor = '';
-                    descInput.style.boxShadow = '';
-                }, 1000);
-
+                enhanceProposal.classList.remove('hidden');
                 enhanceBtn.classList.remove('loading');
                 enhanceBtn.disabled = false;
+                enhanceProposal.scrollIntoView({ behavior: 'smooth' });
             }, 1200);
         });
 
-        function performOptimization(text) {
-            // Simple heuristic improvements
-            const adjectives = ['immersive', 'captivating', 'dynamic', 'authentic', 'groundbreaking', 'emotional', 'visceral'];
-            const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+        applyEnhanceBtn.addEventListener('click', () => {
+            const descInput = document.getElementById('concept-desc');
+            descInput.value = proposedTextElem.value;
+            enhanceProposal.classList.add('hidden');
 
+            // Visual feedback
+            descInput.style.borderColor = 'var(--accent-color)';
+            setTimeout(() => descInput.style.borderColor = '', 1000);
+        });
+
+        discardEnhanceBtn.addEventListener('click', () => {
+            enhanceProposal.classList.add('hidden');
+        });
+
+        function performProfessionalOptimization(text) {
+            // Enhanced agency-style optimization logic
+            const angles = [
+                "Leverage a more disruptive narrative hook that challenges category norms.",
+                "Inject a sensory-driven vocabulary to make the visualization more visceral.",
+                "Shift the focus from product features to a deeper human truth/insight.",
+                "Incorporate a digital-first interactive element to drive engagement."
+            ];
+            const advice = angles[Math.floor(Math.random() * angles.length)];
+
+            // Simulation of a more 'mature' creative suggestion
             let optimized = text;
-
-            // 1. Better openers
-            if (!text.toLowerCase().startsWith('a ') && !text.toLowerCase().startsWith('the ')) {
-                optimized = `A ${randomAdj} campaign featuring: ${text}`;
+            if (text.length < 100) {
+                optimized = `PROPOSAL: ${text}\n\nREFINEMENT: ${advice}\n\nEXPANDED CONCEPT: ${text} by creating a cinematic parallel between the user's daily struggle and the brand's core solution, ensuring a high-impact emotional payoff.`;
             } else {
-                optimized = text.replace(/^(a|the)\s/i, `A ${randomAdj} `);
+                optimized = `${text}\n\nCreative Addendum: ${advice}`;
             }
-
-            // 2. Expand short text
-            if (text.length < 50) {
-                optimized += " It aims to connect deeply with the target audience through visual storytelling and relatable narratives.";
-            }
-
-            // 3. Polishing
-            if (!optimized.endsWith('.')) optimized += '.';
 
             return optimized;
         }
@@ -263,49 +290,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = performHeuristicAnalysis(title, desc);
                 currentAnalysis = result;
 
-                // Update UI
+                // Update Bars
+                animateMetric('m-insight', result.metrics.insight);
+                animateMetric('m-execution', result.metrics.execution);
+                animateMetric('m-innovation', result.metrics.innovation);
+                animateMetric('m-impact', result.metrics.impact);
+
                 aiScoreDisplay.textContent = result.score;
                 aiFeedbackDisplay.textContent = result.feedback;
 
                 analyzeBtn.classList.remove('loading');
                 analyzeBtn.disabled = false;
                 analysisResult.classList.remove('hidden');
-                saveBtn.style.display = 'block'; // Show save button after analysis
+                saveBtn.style.display = 'block';
+                analysisResult.scrollIntoView({ behavior: 'smooth' });
             }, 1500);
         });
 
+        function animateMetric(id, value) {
+            const bar = document.getElementById(id);
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = (value * 10) + '%';
+            }, 100);
+        }
+
         function performHeuristicAnalysis(title, desc) {
-            let score = 5.0;
-            const combinedText = (title + " " + desc).toLowerCase();
+            // Agency-Grade Qualitative Analysis Simulation
+            const combined = (title + " " + desc).toLowerCase();
 
-            // 1. Length Bonus
-            if (desc.length > 50) score += 1.0;
-            if (desc.length > 150) score += 1.0;
+            // Mock scoring based on "agency" criteria
+            const metrics = {
+                insight: Math.min(9.5, 4 + (desc.length / 100) + (combined.includes('because') ? 2 : 0)),
+                execution: Math.min(9.8, 5 + (desc.length / 200)),
+                innovation: Math.min(9.2, 3 + (combined.match(/interactive|viral|ai|ar|metaverse/g)?.length || 0) * 1.5),
+                impact: Math.min(9.6, 4 + (Math.random() * 4))
+            };
 
-            // 2. Keyword Bonus (Buzzwords)
-            const keywords = ['interactive', 'viral', 'emotional', 'cinematic', 'authentic', 'sustainable', 'AI', 'immersive', 'storytelling'];
-            keywords.forEach(word => {
-                if (combinedText.includes(word.toLowerCase())) {
-                    score += 0.5;
-                }
-            });
+            // Override with random variance for organic feel
+            Object.keys(metrics).forEach(k => metrics[k] = parseFloat((metrics[k] + (Math.random() * 1)).toFixed(1)));
 
-            // 3. Random Variance (Creativity Factor)
-            score += (Math.random() * 2 - 1); // +/- 1.0
+            const avg = (metrics.insight + metrics.execution + metrics.innovation + metrics.impact) / 4;
+            const score = parseFloat(avg.toFixed(1));
 
-            // Clamp
-            score = Math.max(1.0, Math.min(9.9, score));
-            score = parseFloat(score.toFixed(1));
-
-            // Generate Feedback
             let feedback = "";
-            if (score >= 9.0) feedback = "This concept is absolutely visionary. High viral potential.";
-            else if (score >= 8.0) feedback = "Strong, marketable idea with clear audience appeal.";
-            else if (score >= 6.0) feedback = "Solid foundation, but could use a unique twist.";
-            else if (score >= 4.0) feedback = "A bit generic. Try to deepen the emotional hook.";
-            else feedback = "Needs significant rethinking. Focus on the core value proposition.";
+            if (score >= 8.5) feedback = "Cannes Lions potential. The disruption factor is high, and the insight feels authentic.";
+            else if (score >= 7.0) feedback = "Solid agency-level work. Strong execution path, though the 'Big Idea' could be sharper.";
+            else if (score >= 5.0) feedback = "Good foundation. Needs more focus on the 'Why' (Strategy) to break through current market noise.";
+            else feedback = "Below global standards. The concept is too derivative. Recommend a total pivot or deeper research.";
 
-            return { score, feedback };
+            return { score, feedback, metrics };
         }
 
         // Save Concept

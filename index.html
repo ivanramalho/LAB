@@ -42,7 +42,7 @@
                 </form>
 
                 <div id="recent-projects-container" class="hidden">
-                    <p class="recent-label">Recent Projects:</p>
+                    <p class="recent-label">Your Creative Archive</p>
                     <div id="recent-projects-list" class="chips-container">
                         <!-- Dynamic Chips -->
                     </div>
@@ -99,14 +99,55 @@
                     <!-- AI Analysis Result -->
                     <div id="analysis-result" class="analysis-card hidden">
                         <div class="analysis-header">
-                            <h3>AI Analysis Result</h3>
+                            <h3>Agency-Grade Scorecard</h3>
                             <div class="score-circle">
                                 <span id="ai-score">0.0</span>
                                 <span class="score-label">/ 10</span>
                             </div>
                         </div>
+                        <div class="analysis-grid">
+                            <div class="metric">
+                                <span class="m-label">Insight & Strategy</span>
+                                <div class="m-bar">
+                                    <div id="m-insight" class="m-fill"></div>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="m-label">Creative Execution</span>
+                                <div class="m-bar">
+                                    <div id="m-execution" class="m-fill"></div>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="m-label">Innovation</span>
+                                <div class="m-bar">
+                                    <div id="m-innovation" class="m-fill"></div>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <span class="m-label">Market Impact</span>
+                                <div class="m-bar">
+                                    <div id="m-impact" class="m-fill"></div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="analysis-body">
                             <p id="ai-feedback">Analyzing...</p>
+                        </div>
+                    </div>
+
+                    <!-- Enhance Proposal (New) -->
+                    <div id="enhance-proposal" class="enhance-card hidden">
+                        <div class="proposal-header">
+                            <h3>✨ Proposed Improvements</h3>
+                            <p>Here's how we can sharpen this concept based on agency standards:</p>
+                        </div>
+                        <div class="proposal-body">
+                            <textarea id="proposed-text" readonly></textarea>
+                        </div>
+                        <div class="proposal-actions">
+                            <button type="button" id="apply-enhancement" class="btn-primary">Apply Changes</button>
+                            <button type="button" id="discard-enhancement" class="btn-text-only">Discard</button>
                         </div>
                     </div>
                 </div>
