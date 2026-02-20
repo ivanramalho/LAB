@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--mouse-x', `${mouseX}%`);
         document.documentElement.style.setProperty('--mouse-y', `${mouseY}%`);
 
+        // Micro-lighting for elements
+        const targets = document.querySelectorAll('.interactive-light');
+        targets.forEach(target => {
+            const rect = target.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            target.style.setProperty('--rel-x', `${x}px`);
+            target.style.setProperty('--rel-y', `${y}px`);
+        });
+
         // Parallax Effects
         const x = (clientX / window.innerWidth - 0.5) * 40;
         const y = (clientY / window.innerHeight - 0.5) * 40;
@@ -412,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             conceptsList.innerHTML = '';
             concepts.forEach(concept => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'card interactive-light';
                 card.innerHTML = `
                     <button class="card-delete" onclick="deleteConcept(${concept.id})">&times;</button>
                     <div class="card-header">
@@ -478,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
             scriptsList.innerHTML = '';
             scripts.forEach(script => {
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'card interactive-light';
                 card.innerHTML = `
                     <button class="card-delete" onclick="deleteScript(${script.id})">&times;</button>
                     <div class="card-header">

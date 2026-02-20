@@ -427,6 +427,37 @@ input[type="range"]::-webkit-slider-thumb:hover {
     box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
 }
 
+/* Micro-lighting for Interactive Elements */
+.interactive-light {
+    position: relative;
+    --rel-x: 50%;
+    --rel-y: 50%;
+}
+
+.interactive-light::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    /* The border width */
+    background: radial-gradient(circle at var(--rel-x) var(--rel-y),
+            rgba(255, 255, 255, 0.4) 0%,
+            transparent 50%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.interactive-light:hover::after {
+    opacity: 1;
+}
+
 .card-header {
     display: flex;
     justify-content: space-between;
