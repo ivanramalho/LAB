@@ -47,9 +47,9 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(255, 255, 255, 0.08) 0%,
-            rgba(168, 85, 247, 0.1) 20%,
-            transparent 50%);
+            rgba(255, 255, 255, 0.15) 0%,
+            rgba(168, 85, 247, 0.12) 25%,
+            transparent 60%);
     pointer-events: none;
     z-index: 1;
     mix-blend-mode: screen;
@@ -705,12 +705,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
     background: transparent;
     border: none;
     text-align: center;
-    max-width: 800px;
-    width: 90%;
+    max-width: 1000px;
+    /* Wider for a hero feel */
+    width: 95%;
     padding: 2rem;
     animation: fadeIn 1.2s ease, float 6s ease-in-out infinite;
     position: relative;
     z-index: 10;
+    backdrop-filter: none;
+    box-shadow: none;
 }
 
 @keyframes float {
