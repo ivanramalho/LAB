@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Interactive Background Lights ---
+    const orbs = document.querySelectorAll('.orb');
+
+    document.addEventListener('mousemove', (e) => {
+        const { clientX, clientY } = e;
+        const x = (clientX / window.innerWidth - 0.5) * 40;
+        const y = (clientY / window.innerHeight - 0.5) * 40;
+
+        orbs.forEach((orb, index) => {
+            const factor = (index + 1) * 0.5;
+            orb.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+        });
+    });
+
+    document.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        orbs.forEach((orb, index) => {
+            const speed = (index + 1) * 0.2;
+            orb.style.top = (index * 20 - scrolled * speed) + 'px';
+        });
+    });
+
     // --- Login System ---
     const loginScreen = document.getElementById('login-screen');
     const loginStep1 = document.getElementById('login-step-1');
