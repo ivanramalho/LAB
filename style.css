@@ -47,12 +47,13 @@ body {
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-            rgba(255, 255, 255, 0.15) 0%,
-            rgba(168, 85, 247, 0.12) 25%,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(168, 85, 247, 0.2) 20%,
             transparent 60%);
     pointer-events: none;
     z-index: 1;
     mix-blend-mode: screen;
+    transition: opacity 0.5s ease;
 }
 
 .bg-lights::after {
@@ -92,7 +93,8 @@ body {
     border-radius: 50% 50% 0 0;
     background: linear-gradient(0deg, transparent, var(--portal-glow));
     filter: blur(80px);
-    opacity: 0.6;
+    opacity: 0.15;
+    /* Dimmed by default */
 }
 
 .portal-flare {
@@ -125,7 +127,8 @@ body {
     position: absolute;
     border-radius: 50%;
     filter: blur(140px);
-    opacity: 0.3;
+    opacity: 0.05;
+    /* Very dimmed by default */
     transition: transform 0.2s cubic-bezier(0.1, 0.7, 1.0, 0.1);
     pointer-events: none;
 }
@@ -172,8 +175,21 @@ header {
 .logo {
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 1.5rem;
-    letter-spacing: 1px;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease;
+}
+
+#switch-project-btn:hover {
+    transform: scale(1.02);
+    filter: brightness(1.2);
+}
+
+#switch-project-btn:active {
+    transform: scale(0.98);
 }
 
 .highlight {
