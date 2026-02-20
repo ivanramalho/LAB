@@ -500,7 +500,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .card:hover {
     transform: translateY(-8px) scale(1.02);
     border-color: var(--accent-color);
-    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+    box-shadow: 0 10px 30px rgba(8, 217, 214, 0.15);
 }
 
 /* Micro-lighting for Interactive Elements */
@@ -617,8 +617,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .btn-secondary:hover {
-    background-color: rgba(138, 43, 226, 0.1);
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+    background-color: rgba(8, 217, 214, 0.1);
+    box-shadow: 0 0 15px rgba(8, 217, 214, 0.2);
 }
 
 .analysis-card {
@@ -627,7 +627,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     border: 1px solid var(--accent-color);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 0 20px rgba(138, 43, 226, 0.15);
+    box-shadow: 0 0 20px rgba(8, 217, 214, 0.1);
     animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -667,7 +667,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     color: var(--accent-color);
     font-size: 2rem;
     font-weight: 700;
-    text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+    text-shadow: 0 0 10px rgba(8, 217, 214, 0.4);
 }
 
 .score-label {
@@ -912,7 +912,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Enhance Button */
 .btn-magic {
-    background: linear-gradient(135deg, #8a2be2, #4a00e0);
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-blue));
     color: #fff;
     border: none;
     padding: 1rem 2rem;
@@ -934,7 +934,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .btn-magic:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+    box-shadow: 0 0 20px rgba(8, 217, 214, 0.3);
 }
 
 .btn-magic::before {
