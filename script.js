@@ -216,7 +216,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loginScreen.style.display = 'none';
             appHeader.classList.remove('hidden');
             appMain.classList.remove('hidden');
-            initializeApp(); // Load data for this scoped project
+
+            if (!appInitialized) {
+                initializeApp(); // First time: registers all event listeners + loads data
+            } else {
+                // On project switch: ONLY reload data, do not re-register listeners
+                loadProjectData();
+            }
         }, 500);
     }
 
@@ -251,42 +257,70 @@ document.addEventListener('DOMContentLoaded', () => {
         const aiScoreDisplay = document.getElementById('ai-score');
         const aiFeedbackDisplay = document.getElementById('ai-feedback');
         const conceptsList = document.getElementById('concepts-list');
-
-        let currentAnalysis = null;
-
-        // Load Concepts (Project Scoped & Normalized)
-        // Use generic key for now if legacy data exists, otherwise use normalized key
-        // NOTE: For this implementation we switch to Normalized Key exclusively for new/robust access
-        const storageKey = getProjectKey(currentProject) + '_concepts';
-        let concepts = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-        // Fallback: Check for legacy non-normalized key if empty (Optional migration logic could go here)
-        // For simplicity, we stick to the new robust key.
-
-        renderConcepts();
-
-        // Enhance Idea (New Two-Step Workflow)
         const enhanceProposal = document.getElementById('enhance-proposal');
         const proposedTextElem = document.getElementById('proposed-text');
         const applyEnhanceBtn = document.getElementById('apply-enhancement');
         const discardEnhanceBtn = document.getElementById('discard-enhancement');
 
+        // --- Commercial Scripts ---
+        const scriptForm = document.getElementById('script-form');
+        const scriptsList = document.getElementById('scripts-list');
+        const scriptBody = document.getElementById('script-body');
+        const scriptTitle = document.getElementById('script-title');
+        const scriptLogline = document.getElementById('script-logline');
+        const analyzeScriptBtn = document.getElementById('analyze-script-btn');
+        const enhanceScriptBtn = document.getElementById('enhance-script-btn');
+        const saveScriptBtn = document.getElementById('save-script-btn');
+        const scriptAnalysisResult = document.getElementById('script-analysis-result');
+        const scriptAIScore = document.getElementById('script-ai-score');
+        const scriptMetricsGrid = document.getElementById('script-metrics-grid');
+        const scriptAIFeedback = document.getElementById('script-ai-feedback');
+        const scriptEnhanceProposal = document.getElementById('script-enhance-proposal');
+        const scriptProposedText = document.getElementById('script-proposed-text');
+        const scriptProposalDesc = document.getElementById('script-proposal-desc');
+
+        // Module-level data — these are re-loaded on every project enter
+        let concepts = [];
+        let scripts = [];
+        let currentAnalysis = null;
+        let currentScriptStyle = 'social';
+
+        // --- KEY FUNCTIONS: always derive key from LIVE currentProject ---
+        function getConceptsKey() { return getProjectKey(currentProject) + '_concepts'; }
+        function getScriptsKey() { return getProjectKey(currentProject) + '_scripts'; }
+
+        function saveConcepts() {
+            localStorage.setItem(getConceptsKey(), JSON.stringify(concepts));
+        }
+
+        function saveScripts() {
+            localStorage.setItem(getScriptsKey(), JSON.stringify(scripts));
+        }
+
+        // Load data for the CURRENT project (called every time user enters a project)
+        function loadProjectData() {
+            concepts = JSON.parse(localStorage.getItem(getConceptsKey())) || [];
+            scripts = JSON.parse(localStorage.getItem(getScriptsKey())) || [];
+            renderConcepts();
+            renderScripts();
+            // Reset UI state
+            analysisResult.classList.add('hidden');
+            enhanceProposal.classList.add('hidden');
+            saveBtn.style.display = 'none';
+            scriptAnalysisResult.classList.add('hidden');
+            scriptEnhanceProposal.classList.add('hidden');
+            saveScriptBtn.style.display = 'none';
+        }
+
+        // Register all event listeners ONCE
         enhanceBtn.addEventListener('click', () => {
             const descInput = document.getElementById('concept-desc');
             const desc = descInput.value.trim();
-
-            if (!desc) {
-                alert('Please enter a description to enhance.');
-                return;
-            }
-
+            if (!desc) { alert('Please enter a description to enhance.'); return; }
             enhanceBtn.classList.add('loading');
             enhanceBtn.disabled = true;
-
             setTimeout(() => {
-                const enhancedText = performProfessionalOptimization(desc);
-                proposedTextElem.value = enhancedText;
-
+                proposedTextElem.value = performProfessionalOptimization(desc);
                 enhanceProposal.classList.remove('hidden');
                 enhanceBtn.classList.remove('loading');
                 enhanceBtn.disabled = false;
@@ -298,18 +332,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const descInput = document.getElementById('concept-desc');
             descInput.value = proposedTextElem.value;
             enhanceProposal.classList.add('hidden');
-
-            // Visual feedback
             descInput.style.borderColor = 'var(--accent-color)';
             setTimeout(() => descInput.style.borderColor = '', 1000);
         });
 
-        discardEnhanceBtn.addEventListener('click', () => {
-            enhanceProposal.classList.add('hidden');
-        });
+        discardEnhanceBtn.addEventListener('click', () => enhanceProposal.classList.add('hidden'));
 
         function performProfessionalOptimization(text) {
-            // Enhanced agency-style optimization logic
             const angles = [
                 "Leverage a more disruptive narrative hook that challenges category norms.",
                 "Inject a sensory-driven vocabulary to make the visualization more visceral.",
@@ -317,48 +346,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 "Incorporate a digital-first interactive element to drive engagement."
             ];
             const advice = angles[Math.floor(Math.random() * angles.length)];
-
-            // Simulation of a more 'mature' creative suggestion
-            let optimized = text;
             if (text.length < 100) {
-                optimized = `PROPOSAL: ${text}\n\nREFINEMENT: ${advice}\n\nEXPANDED CONCEPT: ${text} by creating a cinematic parallel between the user's daily struggle and the brand's core solution, ensuring a high-impact emotional payoff.`;
-            } else {
-                optimized = `${text}\n\nCreative Addendum: ${advice}`;
+                return `PROPOSAL: ${text}\n\nREFINEMENT: ${advice}\n\nEXPANDED CONCEPT: ${text} by creating a cinematic parallel between the user's daily struggle and the brand's core solution, ensuring a high-impact emotional payoff.`;
             }
-
-            return optimized;
+            return `${text}\n\nCreative Addendum: ${advice}`;
         }
 
-        // AI Analysis Simulation
         analyzeBtn.addEventListener('click', () => {
             const title = document.getElementById('concept-title').value.trim();
             const desc = document.getElementById('concept-desc').value.trim();
-
-            if (!title || !desc) {
-                alert('Please fill in both title and description to analyze.');
-                return;
-            }
-
-            // UI Loading State
+            if (!title || !desc) { alert('Please fill in both title and description to analyze.'); return; }
             analyzeBtn.classList.add('loading');
             analyzeBtn.disabled = true;
             analysisResult.classList.add('hidden');
             saveBtn.style.display = 'none';
-
-            // Simulate API Delay
             setTimeout(() => {
                 const result = performHeuristicAnalysis(title, desc);
                 currentAnalysis = result;
-
-                // Update Bars
                 animateMetric('m-insight', result.metrics.insight);
                 animateMetric('m-execution', result.metrics.execution);
                 animateMetric('m-innovation', result.metrics.innovation);
                 animateMetric('m-impact', result.metrics.impact);
-
                 aiScoreDisplay.textContent = result.score;
                 aiFeedbackDisplay.textContent = result.feedback;
-
                 analyzeBtn.classList.remove('loading');
                 analyzeBtn.disabled = false;
                 analysisResult.classList.remove('hidden');
@@ -370,68 +380,49 @@ document.addEventListener('DOMContentLoaded', () => {
         function animateMetric(id, value) {
             const bar = document.getElementById(id);
             bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.width = (value * 10) + '%';
-            }, 100);
+            setTimeout(() => { bar.style.width = (value * 10) + '%'; }, 100);
         }
 
         function performHeuristicAnalysis(title, desc) {
-            // Agency-Grade Qualitative Analysis Simulation
             const combined = (title + " " + desc).toLowerCase();
-
-            // Mock scoring based on "agency" criteria
             const metrics = {
                 insight: Math.min(9.5, 4 + (desc.length / 100) + (combined.includes('because') ? 2 : 0)),
                 execution: Math.min(9.8, 5 + (desc.length / 200)),
                 innovation: Math.min(9.2, 3 + (combined.match(/interactive|viral|ai|ar|metaverse/g)?.length || 0) * 1.5),
                 impact: Math.min(9.6, 4 + (Math.random() * 4))
             };
-
-            // Override with random variance for organic feel
             Object.keys(metrics).forEach(k => metrics[k] = parseFloat((metrics[k] + (Math.random() * 1)).toFixed(1)));
-
             const avg = (metrics.insight + metrics.execution + metrics.innovation + metrics.impact) / 4;
             const score = parseFloat(avg.toFixed(1));
-
             let feedback = "";
             if (score >= 8.5) feedback = "Cannes Lions potential. The disruption factor is high, and the insight feels authentic.";
             else if (score >= 7.0) feedback = "Solid agency-level work. Strong execution path, though the 'Big Idea' could be sharper.";
             else if (score >= 5.0) feedback = "Good foundation. Needs more focus on the 'Why' (Strategy) to break through current market noise.";
             else feedback = "Below global standards. The concept is too derivative. Recommend a total pivot or deeper research.";
-
             return { score, feedback, metrics };
         }
 
         // Save Concept
         conceptForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
             if (!currentAnalysis) return;
-
             const newConcept = {
                 id: Date.now(),
                 title: document.getElementById('concept-title').value,
                 desc: document.getElementById('concept-desc').value,
                 rating: currentAnalysis.score,
                 feedback: currentAnalysis.feedback,
-                author: currentUser, // Attaching Author
+                author: currentUser,
                 date: new Date().toLocaleDateString()
             };
-
             concepts.unshift(newConcept);
             saveConcepts();
             renderConcepts();
-
-            // Reset UI
             conceptForm.reset();
             analysisResult.classList.add('hidden');
             saveBtn.style.display = 'none';
             currentAnalysis = null;
         });
-
-        function saveConcepts() {
-            localStorage.setItem(storageKey, JSON.stringify(concepts));
-        }
 
         function renderConcepts() {
             conceptsList.innerHTML = '';
@@ -457,7 +448,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Connect delete function to window scope
         window.deleteConcept = (id) => {
             if (confirm('Delete this concept?')) {
                 concepts = concepts.filter(c => c.id !== id);
@@ -466,47 +456,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-
-        // --- Commercial Scripts ---
-        const scriptForm = document.getElementById('script-form');
-        const scriptsList = document.getElementById('scripts-list');
-        const scriptBody = document.getElementById('script-body');
-        const scriptTitle = document.getElementById('script-title');
-        const scriptLogline = document.getElementById('script-logline');
-
-        const analyzeScriptBtn = document.getElementById('analyze-script-btn');
-        const enhanceScriptBtn = document.getElementById('enhance-script-btn');
-        const saveScriptBtn = document.getElementById('save-script-btn');
-
-        const scriptAnalysisResult = document.getElementById('script-analysis-result');
-        const scriptAIScore = document.getElementById('script-ai-score');
-        const scriptMetricsGrid = document.getElementById('script-metrics-grid');
-        const scriptAIFeedback = document.getElementById('script-ai-feedback');
-
-        const scriptEnhanceProposal = document.getElementById('script-enhance-proposal');
-        const scriptProposedText = document.getElementById('script-proposed-text');
-        const scriptProposalDesc = document.getElementById('script-proposal-desc');
-
-        let currentScriptStyle = 'social';
-
-        // Style Selection
+        // Style Chip Selection
         const styleChips = document.querySelectorAll('.style-chip');
         styleChips.forEach(chip => {
             chip.addEventListener('click', () => {
                 styleChips.forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 currentScriptStyle = chip.dataset.style;
-                // Clean up dashboard on style change
                 scriptAnalysisResult.classList.add('hidden');
                 scriptEnhanceProposal.classList.add('hidden');
                 saveScriptBtn.style.display = 'none';
             });
         });
-
-        // Load Scripts (Project Scoped & Normalized)
-        const scriptStorageKey = getProjectKey(currentProject) + '_scripts';
-        let scripts = JSON.parse(localStorage.getItem(scriptStorageKey)) || [];
-        renderScripts();
 
         // Heuristic Logic for Scripts
         const scriptCategories = {
@@ -533,76 +494,107 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         function analyzeScriptByStyle() {
-            const bodyText = scriptBody.value;
+            const bodyText = scriptBody.value.trim();
             if (!bodyText) return alert('Please write a script first.');
-
             scriptAnalysisResult.classList.remove('hidden');
-            scriptAIFeedback.textContent = 'Analyzing script patterns...';
-
-            // Artificial delay for "Magic" feel
+            scriptAIFeedback.textContent = 'Analyzing script structure...';
             setTimeout(() => {
                 const category = scriptCategories[currentScriptStyle];
-                const score = Math.floor(Math.random() * 20) + 75; // 75-95
-                scriptAIScore.textContent = score;
-
+                const scores = computeScores(bodyText, currentScriptStyle);
+                const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+                scriptAIScore.textContent = overall;
+                scriptAIScore.style.color = overall < 40 ? '#e74c3c' : overall < 65 ? '#f39c12' : 'var(--accent-color)';
                 scriptMetricsGrid.innerHTML = '';
-                category.metrics.forEach(metric => {
-                    const val = Math.floor(Math.random() * 30) + 65;
+                category.metrics.forEach((metric, i) => {
+                    const val = scores[i];
+                    const barColor = val < 40 ? '#e74c3c' : val < 65 ? '#f39c12' : 'var(--accent-color)';
                     const item = document.createElement('div');
                     item.className = 'metric-item';
                     item.innerHTML = `
-                        <div class="metric-label">${metric}</div>
+                        <div class="metric-label">${metric} <span style="float:right;color:${barColor}">${val}%</span></div>
                         <div class="metric-value-wrap">
-                            <div class="metric-fill" style="width: ${val}%"></div>
+                            <div class="metric-fill" style="width: ${val}%; background: ${barColor}; box-shadow: 0 0 8px ${barColor}55;"></div>
                         </div>
                     `;
                     scriptMetricsGrid.appendChild(item);
                 });
-
-                scriptAIFeedback.textContent = `Scoring based on ${category.label} guidelines: ${category.advice} Your script shows strong ${category.metrics[0].toLowerCase()}.`;
+                let feedback = '';
+                if (overall < 35) feedback = `⚠️ Script is too sparse for ${category.label}. Click ✨ Enhance to generate a full structure.`;
+                else if (overall < 60) feedback = `📝 Foundation exists but needs more ${category.label} elements. Focus on: ${category.advice}`;
+                else feedback = `✅ Solid structure for ${category.label}. ${category.advice}`;
+                scriptAIFeedback.textContent = feedback;
                 saveScriptBtn.style.display = 'block';
-            }, 1000);
+            }, 1200);
+        }
+
+        function computeScores(text, style) {
+            const words = text.split(/\s+/).filter(Boolean).length;
+            const lines = text.split('\n').filter(l => l.trim()).length;
+            const hasSceneHeading = /\b(INT\.|EXT\.|INT\/EXT\.)/i.test(text);
+            const hasDialogue = text.includes(':') || /[""]/.test(text);
+            const hasAction = words > 20;
+            const hasConflict = /\b(but|however|suddenly|until|when|unless|although|despite)\b/i.test(text);
+            const hasCTA = /\b(follow|subscribe|share|click|buy|visit|comment)\b/i.test(text);
+            const hasHook = lines >= 1 && words >= 5;
+            const wordRatio = Math.min(words / 150, 1);
+            if (style === 'shortfillm') return [
+                Math.round((hasSceneHeading ? 40 : 5) + wordRatio * 60),
+                Math.round((lines > 3 ? 30 : 5) + wordRatio * 50),
+                Math.round((hasConflict ? 40 : 5) + wordRatio * 40),
+                Math.round((hasAction || hasDialogue ? 35 : 5) + wordRatio * 45)
+            ];
+            if (style === 'animation') return [
+                Math.round((hasSceneHeading ? 40 : 5) + wordRatio * 55),
+                Math.round((hasDialogue ? 10 : 40) + wordRatio * 30),
+                Math.round((hasAction ? 30 : 5) + wordRatio * 50),
+                Math.round(wordRatio * 70 + (lines > 2 ? 20 : 5))
+            ];
+            if (style === 'youtube') return [
+                Math.round((wordRatio * 60) + (lines > 4 ? 25 : 0)),
+                Math.round((hasHook ? 35 : 5) + wordRatio * 40),
+                Math.round(wordRatio * 80),
+                Math.round((hasConflict ? 30 : 5) + wordRatio * 40)
+            ];
+            return [ // social
+                Math.round((hasHook ? 35 : 5) + (words < 60 ? 35 : 10) + wordRatio * 20),
+                Math.round((words < 80 ? 40 : 15) + (hasAction ? 20 : 0) + wordRatio * 20),
+                Math.round((lines > 1 ? 30 : 5) + wordRatio * 30),
+                Math.round((hasCTA ? 50 : 5) + wordRatio * 30)
+            ];
         }
 
         analyzeScriptBtn.addEventListener('click', analyzeScriptByStyle);
 
-        // Enhancement Logic
         enhanceScriptBtn.addEventListener('click', () => {
-            const bodyText = scriptBody.value;
-            if (!bodyText) return alert('Please write a script first.');
-
+            const bodyText = scriptBody.value.trim();
+            if (!bodyText) return alert('Please write an idea or script first.');
             enhanceScriptBtn.disabled = true;
-            enhanceScriptBtn.querySelector('.btn-text').textContent = 'Generating...';
-
+            enhanceScriptBtn.querySelector('.btn-text').textContent = 'Building Script...';
             setTimeout(() => {
-                const optimized = performScriptOptimization(bodyText, currentScriptStyle);
-                scriptProposedText.value = optimized;
+                scriptProposedText.value = performScriptOptimization(bodyText, currentScriptStyle);
                 scriptEnhanceProposal.classList.remove('hidden');
-                scriptProposalDesc.textContent = `Optimized for ${scriptCategories[currentScriptStyle].label} metrics.`;
-
+                scriptProposalDesc.textContent = `Full structure generated for ${scriptCategories[currentScriptStyle].label}.`;
                 enhanceScriptBtn.disabled = false;
                 enhanceScriptBtn.querySelector('.btn-text').textContent = '✨ Enhance Script';
-
-                // Scroll to proposal
-                scriptEnhanceProposal.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 1500);
+                scriptEnhanceProposal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 1800);
         });
 
         function performScriptOptimization(text, style) {
-            let optimized = text;
-            if (style === 'social') {
-                optimized = `[HOOK: START WITH A RESULT OR BOLD CLAIM]\n${text.substring(0, 50)}...\n\n[TRANSITION: PATTERN INTERRUPT HERE]\n${text}\n\n[CTA: FOLLOW FOR MORE]`;
-            } else if (style === 'animation') {
-                optimized = `[VISUAL: DESCRIBE COLORS AND LIGHTING]\n${text.replace(/\n/g, '\n[ACTION: ] ')}\n\n[NOTE: MINIMIZE DIALOGUE FOR IMPACT]`;
-            } else if (style === 'youtube') {
-                optimized = `[INTENSITY HOOK - 5s]\n${text}\n\n[MIDPOINT RETENTION RESET]\n[CTA: SUBSCRIBE IF YOU FOUND VALUE]`;
-            } else {
-                optimized = `[SCENE START AS LATE AS POSSIBLE]\n${text}\n\n[SCENE END AS EARLY AS POSSIBLE]`;
+            const idea = text.trim();
+            if (style === 'shortfillm') {
+                return `SHORT FILM — GENERATED STRUCTURE\nBased on your idea: "${idea}"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nACT 1 — SETUP (Enter as late as possible)\nINT. [LOCATION] — DAY/NIGHT\n[We meet the protagonist in their ordinary world. Something is already slightly off.]\n\n${idea}\n\nThe character pauses. Something draws their attention — a detail most would ignore.\n\nCHARACTER (V.O.)\n"[Internal thought that reveals desire or fear]"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nACT 2 — CONFRONTATION\nEXT. [NEW LOCATION] — [TIME]\n[The world pushes back. The conflict is now unavoidable.]\n\nCHARACTER\n"[Line that reveals they are wrong about something]"\n\n[ACTION: A choice must be made. The audience feels the weight.]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nACT 3 — RESOLUTION (Exit as soon as the point lands)\nINT. [LOCATION] — [TIME] — MOMENTS LATER\n\n[The character is changed — even if just slightly. Show it, don't say it.]\n\nFADE TO BLACK.\n\nTITLE CARD: [Film Title]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTE: Fill the bracketed directions with your specific scenes and dialogue.`;
             }
-            return optimized;
+            if (style === 'animation') {
+                return `ANIMATION SCRIPT — GENERATED STRUCTURE\nConcept: "${idea}"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSCENE 01 — WORLD INTRODUCTION\nVISUAL: [Establish color palette — warm/cool tones, lighting mood]\nMUSIC: [Underscore begins — light, curious]\n\n[CHARACTER NAME] stands in [ENVIRONMENT]. The world is [describe visual style].\n[ACTION: Character notices something. Eyes shift. Small movement — no words needed.]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nSCENE 02 — CONFLICT / CHOICE\nVISUAL: [Color shift — warmer/darker to signal tension]\n[ACTION: A second character or obstacle enters the frame.]\n\n${idea}\n\nCHARACTER A\n(barely a whisper)\n"[One impactful line. Maximum emotion, minimum words.]"\n\nPAUSE — 2 SECONDS. Let the image breathe.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nSCENE 03 — RESOLUTION\nVISUAL: [Return to opening palette, but something is different]\n[ACTION: Character is in the same world, but transformed.]\nMUSIC: [Swells and resolves]\n\nFADE OUT.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTES: Keep dialogue under 5 lines. Let visual metaphors carry the story weight.`;
+            }
+            if (style === 'youtube') {
+                return `YOUTUBE SCRIPT — GENERATED STRUCTURE\nTopic: "${idea}"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[00:00–00:15] HOOK\n"[Bold statement or surprising fact about: ${idea}]"\n"Stay until the end — this changes everything."\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[00:15–01:00] INTRO & CONTEXT\n→ Point 1: [Context]\n→ Point 2: [Why now]\n→ Point 3: [Who this is for]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[01:00–04:00] MAIN CONTENT\n**POINT 1:** [Main argument + example]\n**POINT 2:** [Deeper insight + personal angle]\n**POINT 3:** [Actionable step viewer can take today]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[04:00–04:30] RETENTION RESET\n"But here's what most people get wrong about this..."\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[04:30–05:00] CLOSE + CTA\n"[Summarize key insight in one sentence.]"\n"Subscribe — I post [frequency] about [topic]."`;
+            }
+            // social
+            return `SOCIAL MEDIA SCRIPT — GENERATED STRUCTURE\nConcept: "${idea}"\nFormat: 15–45 seconds | TikTok / Instagram Reels\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[0–3s] STOP-THE-SCROLL HOOK\nVISUAL: [Start MID-action or with a result already visible]\nTEXT ON SCREEN: "[Bold 3–5 word claim]"\nVOICE: "[Sentence that creates curiosity about: ${idea}]"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[3–5s] PATTERN INTERRUPT\n[CUT or ZOOM]\n"Most people don't know this..."\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[5–20s] VALUE / STORY\n→ "[Beat 1 — the problem or situation]"\n→ "[Beat 2 — the insight or action]"\n→ "[Beat 3 — the result or proof]"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[20–30s] CTA\n"Follow for more [topic] content."\nTEXT ON SCREEN: "[Your handle or brand]"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nMETRICS:\n☐ First 3s hook rate > 60%\n☐ Watch time > 50%\n☐ Save / Share rate`;
         }
 
-        // Apply Enhancement
         document.getElementById('apply-script-enhance').addEventListener('click', () => {
             scriptBody.value = scriptProposedText.value;
             scriptEnhanceProposal.classList.add('hidden');
@@ -613,10 +605,8 @@ document.addEventListener('DOMContentLoaded', () => {
             scriptEnhanceProposal.classList.add('hidden');
         });
 
-        // Add Script
         scriptForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
             const newScript = {
                 id: Date.now(),
                 title: scriptTitle.value,
@@ -626,7 +616,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 author: currentUser,
                 date: new Date().toLocaleDateString()
             };
-
             scripts.unshift(newScript);
             saveScripts();
             renderScripts();
@@ -634,10 +623,6 @@ document.addEventListener('DOMContentLoaded', () => {
             scriptAnalysisResult.classList.add('hidden');
             saveScriptBtn.style.display = 'none';
         });
-
-        function saveScripts() {
-            localStorage.setItem(scriptStorageKey, JSON.stringify(scripts));
-        }
 
         function renderScripts() {
             scriptsList.innerHTML = '';
@@ -671,5 +656,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderScripts();
             }
         };
+
+        // Load project data for the first time
+        loadProjectData();
     }
 });
+
