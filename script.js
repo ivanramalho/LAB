@@ -60,6 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const recentProjectsContainer = document.getElementById('recent-projects-container');
     const recentProjectsList = document.getElementById('recent-projects-list');
 
+    const logoutBtn = document.getElementById('logout-btn');
+
     const appHeader = document.querySelector('.app-header');
     const appMain = document.querySelector('.app-main');
     const currentProjectDisplay = document.getElementById('current-project-display');
@@ -69,22 +71,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Switch Project Handler
     switchProjectBtn.addEventListener('click', () => {
-        // Show login overlay
+        openEntryScreen(true);
+    });
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // Clear current project, but keep last user name for convenience
+            localStorage.removeItem('creativeLab_lastProject');
+            openEntryScreen(false);
+        });
+    }
+
+    function openEntryScreen(keepUser = true) {
         loginScreen.style.display = 'flex';
         setTimeout(() => {
             loginScreen.style.opacity = '1';
         }, 10);
 
-        // Transition to Step 2 directly (keeping user)
-        loginStep1.classList.add('hidden');
-        loginStep2.classList.remove('hidden');
-        renderRecentProjects();
-        projectInput.focus();
+        if (keepUser) {
+            loginStep1.classList.add('hidden');
+            loginStep2.classList.remove('hidden');
+            renderRecentProjects();
+            projectInput.focus();
+        } else {
+            loginStep2.classList.add('hidden');
+            loginStep1.classList.remove('hidden');
+            userInput.focus();
+        }
 
-        // Hide App
         appHeader.classList.add('hidden');
         appMain.classList.add('hidden');
-    });
+    }
 
     // Auto-fill User if available
     if (currentUser) {
@@ -145,28 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderRecentProjects() {
         if (!currentUser) return;
 
-        // Scan ALL localStorage keys to find projects OWNED by current user
-        const allProjects = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key.startsWith('creativeLab_project_') && key.endsWith('_owner')) {
-                const owner = localStorage.getItem(key);
-                if (owner === currentUser) {
-                    const normalizedName = key.replace('creativeLab_project_', '').replace('_owner', '');
-                    // We need the display name. Let's look for concepts or scripts to find capitalization, 
-                    // or just use the normalized name for the chip.
-                    if (!allProjects.includes(normalizedName)) allProjects.push(normalizedName);
-                }
-            }
-        }
-
-        // Include the user-specific 'recents' list
+        // Strictly use user-scoped recents
         const recents = getRecentProjects();
-        recents.forEach(p => {
-            if (!allProjects.includes(p.toLowerCase())) allProjects.push(p.toLowerCase());
-        });
 
-        if (allProjects.length === 0) {
+        if (recents.length === 0) {
             recentProjectsContainer.classList.add('hidden');
             return;
         }
@@ -174,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         recentProjectsContainer.classList.remove('hidden');
         recentProjectsList.innerHTML = '';
 
-        allProjects.forEach(proj => {
+        recents.forEach(proj => {
             const chip = document.createElement('div');
             chip.className = 'recent-chip';
             chip.textContent = proj;
@@ -187,31 +186,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getProjectKey(projectName) {
-        // Normalize: lowercase and trim to ensure "Nike" == "nike"
-        return `creativeLab_project_${projectName.trim().toLowerCase()}`;
+        const userSlug = currentUser.trim().toLowerCase().replace(/\s+/g, '_');
+        const projectSlug = projectName.trim().toLowerCase().replace(/\s+/g, '_');
+        return `creativeLab_${userSlug}_project_${projectSlug}`;
     }
 
     function enterLab(projectName) {
-        const normalizedName = projectName.trim().toLowerCase();
-        const ownerKey = `creativeLab_project_${normalizedName}_owner`;
-        const existingOwner = localStorage.getItem(ownerKey);
-
-        if (existingOwner && existingOwner !== currentUser) {
-            alert(`Access Denied: This workspace belongs to ${existingOwner}.`);
-            return;
-        }
-
-        // Set ownership if new
-        if (!existingOwner) {
-            localStorage.setItem(ownerKey, currentUser);
-        }
-
         currentProject = projectName;
-        addToRecents(currentProject); // Save to history
+        addToRecents(currentProject); // Save to user-scoped history
         localStorage.setItem('creativeLab_lastProject', currentProject);
 
         // Update UI
-        currentProjectDisplay.textContent = `| ${currentProject} (User: ${currentUser})`;
+        currentProjectDisplay.textContent = `| ${currentProject}`;
 
         // Hide Login, Show App
         loginScreen.style.opacity = '0';
@@ -219,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginScreen.style.display = 'none';
             appHeader.classList.remove('hidden');
             appMain.classList.remove('hidden');
-            initializeApp(); // Load data for this project
+            initializeApp(); // Load data for this scoped project
         }, 500);
     }
 
