@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentUser = localStorage.getItem('creativeLab_lastUser') || '';
     let currentProject = localStorage.getItem('creativeLab_lastProject') || '';
+    let appInitialized = false; // Guard to prevent double event listeners
 
     // Switch Project Handler
     switchProjectBtn.addEventListener('click', () => {
@@ -106,6 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-fill User if available
     if (currentUser) {
         userInput.value = currentUser;
+    }
+
+    // Auto-restore full session: if we have both user and project, re-enter directly
+    if (currentUser && currentProject) {
+        // Skip login screens and go directly to their workspace
+        enterLab(currentProject);
     }
 
     // Step 1: User Name
@@ -186,6 +193,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getProjectKey(projectName) {
+        if (!currentUser || !projectName) {
+            console.warn('[CreativeLab] getProjectKey called with empty user or project.');
+            return `creativeLab__fallback_project_`;
+        }
         const userSlug = currentUser.trim().toLowerCase().replace(/\s+/g, '_');
         const projectSlug = projectName.trim().toLowerCase().replace(/\s+/g, '_');
         return `creativeLab_${userSlug}_project_${projectSlug}`;
@@ -211,26 +222,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeApp() {
         // --- Navigation / Tabs ---
-        const navBtns = document.querySelectorAll('.nav-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
+        // Only register nav listeners ONCE to avoid stacking handlers on project switch
+        if (!appInitialized) {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-        navBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.getAttribute('data-tab');
-
-                // Update Buttons
-                navBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Update Content
-                tabContents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === tabId) {
-                        content.classList.add('active');
-                    }
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) content.classList.add('active');
+                    });
                 });
             });
-        });
+
+            appInitialized = true;
+        }
 
         // --- Campaign Concepts (AI Analysis) ---
         const conceptForm = document.getElementById('concept-form');
