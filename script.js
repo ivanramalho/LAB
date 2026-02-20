@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Interactive Background Lights ---
     const orbs = document.querySelectorAll('.orb');
+    const portal = document.querySelector('.glow-portal');
 
     document.addEventListener('mousemove', (e) => {
         const { clientX, clientY } = e;
@@ -11,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const factor = (index + 1) * 0.5;
             orb.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
         });
+
+        if (portal) {
+            portal.style.transform = `translateX(calc(-50% + ${-x * 0.4}px)) translateY(${-y * 0.2}px)`;
+        }
     });
 
     document.addEventListener('scroll', () => {

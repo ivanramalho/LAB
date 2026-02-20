@@ -15,20 +15,26 @@
 
 <body>
     <div class="bg-lights">
+        <div class="grid-overlay"></div>
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
+        <div class="glow-portal">
+            <div class="portal-arc"></div>
+            <div class="portal-flare"></div>
+        </div>
     </div>
 
 
     <!-- Login / Project Entry Screen -->
     <div id="login-screen" class="login-overlay">
         <div class="login-box">
-            <div class="logo-large">CREATIVE LAB</div>
+            <div class="logo-large">CREATIVE <span class="luxury-text">Lab</span></div>
 
             <!-- Step 1: User Name -->
             <div id="login-step-1">
-                <p class="login-subtitle">Who is creating today?</p>
+                <p class="login-subtitle">Elevate your <span class="luxury-text">Property</span> with professional
+                    insights.</p>
                 <form id="user-form">
                     <input type="text" id="user-name" placeholder="Your Name (e.g., Alice)" required autocomplete="off">
                     <button type="submit" class="btn-primary">Next</button>

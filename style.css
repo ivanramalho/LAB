@@ -1,14 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
+
 :root {
-    --bg-color: #030303;
-    --surface-color: #0a0a0a;
+    --bg-color: #020205;
+    --surface-color: #08080c;
     --text-primary: #ffffff;
-    --text-secondary: #888;
-    --accent-color: #8a2be2;
-    --accent-hover: #9d4edd;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --glass-bg: rgba(15, 15, 15, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-secondary: #8e8ea8;
+    --accent-color: #a855f7;
+    --accent-hover: #c084fc;
+    --portal-glow: #7c3aed;
+    --border-color: rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(10, 10, 15, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.12);
     --font-heading: 'Outfit', sans-serif;
+    --font-serif: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
 }
 
@@ -26,7 +30,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Background Lights */
+/* Background & Portal */
 .bg-lights {
     position: fixed;
     top: 0;
@@ -38,39 +42,80 @@ body {
     background: var(--bg-color);
 }
 
+.grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+}
+
+.glow-portal {
+    position: absolute;
+    bottom: -150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 400px;
+    pointer-events: none;
+}
+
+.portal-arc {
+    width: 100%;
+    height: 100%;
+    border-radius: 50% 50% 0 0;
+    background: linear-gradient(0deg, transparent, var(--portal-glow));
+    filter: blur(80px);
+    opacity: 0.6;
+}
+
+.portal-flare {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 100px;
+    background: white;
+    filter: blur(60px);
+    opacity: 0.4;
+    border-radius: 50%;
+}
+
 .orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.4;
-    transition: transform 0.1s ease-out;
+    filter: blur(140px);
+    opacity: 0.3;
+    transition: transform 0.2s cubic-bezier(0.1, 0.7, 1.0, 0.1);
     pointer-events: none;
 }
 
 .orb-1 {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
-    top: -200px;
-    left: -100px;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+    top: -300px;
+    right: -200px;
 }
 
 .orb-2 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #4a00e0 0%, transparent 70%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #7e22ce 0%, transparent 70%);
     bottom: -100px;
-    right: -100px;
+    left: -100px;
 }
 
 .orb-3 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #ff00c1 0%, transparent 70%);
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.2;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #06b6d4 0%, transparent 70%);
+    top: 20%;
+    left: 30%;
+    opacity: 0.1;
 }
 
 /* Header */
@@ -596,18 +641,28 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .logo-large {
     font-family: var(--font-heading);
     font-weight: 700;
-    font-size: 3rem;
-    letter-spacing: 2px;
+    font-size: 3.5rem;
+    letter-spacing: -1px;
     margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, #fff, var(--text-secondary));
+    background: linear-gradient(to bottom, #fff, #999);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .login-subtitle {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
     color: var(--text-secondary);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+/* Luxury Text Style for some parts */
+.luxury-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: #fff;
+    font-weight: 400;
 }
 
 #login-form input {
