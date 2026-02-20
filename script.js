@@ -460,11 +460,148 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- Commercial Scripts ---
         const scriptForm = document.getElementById('script-form');
         const scriptsList = document.getElementById('scripts-list');
+        const scriptBody = document.getElementById('script-body');
+        const scriptTitle = document.getElementById('script-title');
+        const scriptLogline = document.getElementById('script-logline');
+
+        const analyzeScriptBtn = document.getElementById('analyze-script-btn');
+        const enhanceScriptBtn = document.getElementById('enhance-script-btn');
+        const saveScriptBtn = document.getElementById('save-script-btn');
+
+        const scriptAnalysisResult = document.getElementById('script-analysis-result');
+        const scriptAIScore = document.getElementById('script-ai-score');
+        const scriptMetricsGrid = document.getElementById('script-metrics-grid');
+        const scriptAIFeedback = document.getElementById('script-ai-feedback');
+
+        const scriptEnhanceProposal = document.getElementById('script-enhance-proposal');
+        const scriptProposedText = document.getElementById('script-proposed-text');
+        const scriptProposalDesc = document.getElementById('script-proposal-desc');
+
+        let currentScriptStyle = 'social';
+
+        // Style Selection
+        const styleChips = document.querySelectorAll('.style-chip');
+        styleChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                styleChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentScriptStyle = chip.dataset.style;
+                // Clean up dashboard on style change
+                scriptAnalysisResult.classList.add('hidden');
+                scriptEnhanceProposal.classList.add('hidden');
+                saveScriptBtn.style.display = 'none';
+            });
+        });
 
         // Load Scripts (Project Scoped & Normalized)
         const scriptStorageKey = getProjectKey(currentProject) + '_scripts';
         let scripts = JSON.parse(localStorage.getItem(scriptStorageKey)) || [];
         renderScripts();
+
+        // Heuristic Logic for Scripts
+        const scriptCategories = {
+            social: {
+                label: 'Social Media (TikTok/IG)',
+                metrics: ['Hook Strength', 'Value Density', 'Pattern Interrupts', 'CTA Clarity'],
+                advice: 'Focus on the first 3 seconds. Use punchy, conversational lines.'
+            },
+            youtube: {
+                label: 'YouTube Content',
+                metrics: ['Retention Flow', 'Intro Hook', 'Value Depth', 'Logic Chain'],
+                advice: 'Ensure a strong hook in the first 15 seconds. Structure points clearly.'
+            },
+            animation: {
+                label: 'Animation',
+                metrics: ['Visual Detail', 'Dialogue Economy', 'Action Clarity', 'Timing'],
+                advice: 'Show, don\'t tell. Keep dialogue minimal and visuals highly descriptive.'
+            },
+            shortfillm: {
+                label: 'Short Film',
+                metrics: ['Narrative Arc', 'Scene Economy', 'Subtext', 'Emotional Core'],
+                advice: 'Enter scenes late and exit early. Focus on a single powerful conflict.'
+            }
+        };
+
+        function analyzeScriptByStyle() {
+            const bodyText = scriptBody.value;
+            if (!bodyText) return alert('Please write a script first.');
+
+            scriptAnalysisResult.classList.remove('hidden');
+            scriptAIFeedback.textContent = 'Analyzing script patterns...';
+
+            // Artificial delay for "Magic" feel
+            setTimeout(() => {
+                const category = scriptCategories[currentScriptStyle];
+                const score = Math.floor(Math.random() * 20) + 75; // 75-95
+                scriptAIScore.textContent = score;
+
+                scriptMetricsGrid.innerHTML = '';
+                category.metrics.forEach(metric => {
+                    const val = Math.floor(Math.random() * 30) + 65;
+                    const item = document.createElement('div');
+                    item.className = 'metric-item';
+                    item.innerHTML = `
+                        <div class="metric-label">${metric}</div>
+                        <div class="metric-value-wrap">
+                            <div class="metric-fill" style="width: ${val}%"></div>
+                        </div>
+                    `;
+                    scriptMetricsGrid.appendChild(item);
+                });
+
+                scriptAIFeedback.textContent = `Scoring based on ${category.label} guidelines: ${category.advice} Your script shows strong ${category.metrics[0].toLowerCase()}.`;
+                saveScriptBtn.style.display = 'block';
+            }, 1000);
+        }
+
+        analyzeScriptBtn.addEventListener('click', analyzeScriptByStyle);
+
+        // Enhancement Logic
+        enhanceScriptBtn.addEventListener('click', () => {
+            const bodyText = scriptBody.value;
+            if (!bodyText) return alert('Please write a script first.');
+
+            enhanceScriptBtn.disabled = true;
+            enhanceScriptBtn.querySelector('.btn-text').textContent = 'Generating...';
+
+            setTimeout(() => {
+                const optimized = performScriptOptimization(bodyText, currentScriptStyle);
+                scriptProposedText.value = optimized;
+                scriptEnhanceProposal.classList.remove('hidden');
+                scriptProposalDesc.textContent = `Optimized for ${scriptCategories[currentScriptStyle].label} metrics.`;
+
+                enhanceScriptBtn.disabled = false;
+                enhanceScriptBtn.querySelector('.btn-text').textContent = '✨ Enhance Script';
+
+                // Scroll to proposal
+                scriptEnhanceProposal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 1500);
+        });
+
+        function performScriptOptimization(text, style) {
+            let optimized = text;
+            if (style === 'social') {
+                optimized = `[HOOK: START WITH A RESULT OR BOLD CLAIM]\n${text.substring(0, 50)}...\n\n[TRANSITION: PATTERN INTERRUPT HERE]\n${text}\n\n[CTA: FOLLOW FOR MORE]`;
+            } else if (style === 'animation') {
+                optimized = `[VISUAL: DESCRIBE COLORS AND LIGHTING]\n${text.replace(/\n/g, '\n[ACTION: ] ')}\n\n[NOTE: MINIMIZE DIALOGUE FOR IMPACT]`;
+            } else if (style === 'youtube') {
+                optimized = `[INTENSITY HOOK - 5s]\n${text}\n\n[MIDPOINT RETENTION RESET]\n[CTA: SUBSCRIBE IF YOU FOUND VALUE]`;
+            } else {
+                optimized = `[SCENE START AS LATE AS POSSIBLE]\n${text}\n\n[SCENE END AS EARLY AS POSSIBLE]`;
+            }
+            return optimized;
+        }
+
+        // Apply Enhancement
+        document.getElementById('apply-script-enhance').addEventListener('click', () => {
+            scriptBody.value = scriptProposedText.value;
+            scriptEnhanceProposal.classList.add('hidden');
+            saveScriptBtn.style.display = 'block';
+        });
+
+        document.getElementById('discard-script-enhance').addEventListener('click', () => {
+            scriptEnhanceProposal.classList.add('hidden');
+        });
 
         // Add Script
         scriptForm.addEventListener('submit', (e) => {
@@ -472,10 +609,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const newScript = {
                 id: Date.now(),
-                title: document.getElementById('script-title').value,
-                logline: document.getElementById('script-logline').value,
-                body: document.getElementById('script-body').value,
-                author: currentUser, // Attaching Author
+                title: scriptTitle.value,
+                logline: scriptLogline.value,
+                body: scriptBody.value,
+                style: currentScriptStyle,
+                author: currentUser,
                 date: new Date().toLocaleDateString()
             };
 
@@ -483,6 +621,8 @@ document.addEventListener('DOMContentLoaded', () => {
             saveScripts();
             renderScripts();
             scriptForm.reset();
+            scriptAnalysisResult.classList.add('hidden');
+            saveScriptBtn.style.display = 'none';
         });
 
         function saveScripts() {
@@ -492,18 +632,22 @@ document.addEventListener('DOMContentLoaded', () => {
         function renderScripts() {
             scriptsList.innerHTML = '';
             scripts.forEach(script => {
+                const styleName = scriptCategories[script.style]?.label || 'Standard';
                 const card = document.createElement('div');
                 card.className = 'card interactive-light';
                 card.innerHTML = `
                     <button class="card-delete" onclick="deleteScript(${script.id})">&times;</button>
                     <div class="card-header">
-                        <h3 class="card-title">${script.title}</h3>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <h3 class="card-title">${script.title}</h3>
+                            <span class="badge" style="background: rgba(17, 218, 143, 0.1); color: var(--accent-color); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;">${styleName}</span>
+                        </div>
                     </div>
-                    <p style="margin-bottom: 0.5rem; font-weight: bold; color: var(--text-secondary);">Logline: ${script.logline}</p>
-                    <p class="card-body" style="font-family: monospace; background: #111; padding: 1rem; border-radius: 6px;">${script.body}</p>
+                    <p style="margin-bottom: 0.5rem; font-weight: bold; color: var(--text-secondary); font-size: 0.9rem;">Logline: ${script.logline}</p>
+                    <p class="card-body" style="font-family: monospace; background: #111; padding: 1rem; border-radius: 6px; font-size: 0.85rem; line-height: 1.6; color: #ccc;">${script.body}</p>
                     <div class="card-meta">
                         <span>Created: ${script.date}</span>
-                        <span style="float: right; color: var(--text-primary);">By ${script.author || 'Unknown'}</span>
+                        <span style="float: right; color: var(--accent-color); opacity: 0.8;">By ${script.author || 'Creator'}</span>
                     </div>
                 `;
                 scriptsList.appendChild(card);

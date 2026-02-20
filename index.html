@@ -183,7 +183,19 @@
         <section id="scripts" class="tab-content">
             <div class="container">
                 <div class="input-panel">
-                    <h2>New Commercial Script</h2>
+                    <h2>Script Development</h2>
+
+                    <!-- Style Selector Chips -->
+                    <div class="style-selector-wrap">
+                        <p class="selector-label">Choose Creative Direction:</p>
+                        <div id="script-style-chips" class="chips-container">
+                            <div class="style-chip active" data-style="social">Social Media</div>
+                            <div class="style-chip" data-style="youtube">YouTube</div>
+                            <div class="style-chip" data-style="animation">Animation</div>
+                            <div class="style-chip" data-style="shortfillm">Short Film</div>
+                        </div>
+                    </div>
+
                     <form id="script-form">
                         <div class="form-group">
                             <label for="script-title">Title</label>
@@ -197,8 +209,52 @@
                             <label for="script-body">Script Body</label>
                             <textarea id="script-body" placeholder="INT. OFFICE - DAY..." rows="10" required></textarea>
                         </div>
-                        <button type="submit" class="btn-primary">Save Script</button>
+
+                        <div class="form-actions">
+                            <button type="button" id="enhance-script-btn" class="btn-magic">
+                                <span class="btn-text">✨ Enhance Script</span>
+                                <div class="btn-glow"></div>
+                            </button>
+                            <button type="button" id="analyze-script-btn" class="btn-secondary">
+                                <span class="btn-text">📊 Analyze Heuristics</span>
+                            </button>
+                        </div>
+
+                        <button type="submit" id="save-script-btn" class="btn-primary"
+                            style="display: none; margin-top: 1rem;">Save to Archive</button>
                     </form>
+
+                    <!-- Advanced Analysis Result (Dynamic) -->
+                    <div id="script-analysis-result" class="analysis-card hidden">
+                        <div class="analysis-header">
+                            <div class="score-box">
+                                <span class="score-label">AI SCORE</span>
+                                <span id="script-ai-score" class="score-value">--</span>
+                            </div>
+                            <div class="metrics-grid" id="script-metrics-grid">
+                                <!-- Dynamic metrics bars will be injected here -->
+                            </div>
+                        </div>
+                        <div class="analysis-body">
+                            <p id="script-ai-feedback">Ready to analyze...</p>
+                        </div>
+                    </div>
+
+                    <!-- Enhance Proposal Area -->
+                    <div id="script-enhance-proposal" class="enhance-card hidden">
+                        <div class="proposal-header">
+                            <h3>✨ Proposed Script Refinements</h3>
+                            <p id="script-proposal-desc">Optimizing for Social Media standards...</p>
+                        </div>
+                        <div class="proposal-body">
+                            <textarea id="script-proposed-text" readonly></textarea>
+                        </div>
+                        <div class="proposal-actions">
+                            <button type="button" id="apply-script-enhance" class="btn-primary">Apply
+                                Improvements</button>
+                            <button type="button" id="discard-script-enhance" class="btn-text-only">Discard</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="display-panel">

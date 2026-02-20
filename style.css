@@ -580,18 +580,98 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .btn-secondary:hover {
-    background-color: rgba(8, 217, 214, 0.1);
-    box-shadow: 0 0 15px rgba(8, 217, 214, 0.2);
+    background-color: rgba(17, 218, 143, 0.1);
+    box-shadow: 0 0 15px rgba(17, 218, 143, 0.2);
+    border-color: var(--accent-color);
+}
+
+/* Style Selector Chips */
+.style-selector-wrap {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.selector-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.style-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.style-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.style-chip.active {
+    background: rgba(17, 218, 143, 0.1);
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(17, 218, 143, 0.15);
 }
 
 .analysis-card {
     margin-top: 2rem;
-    background: linear-gradient(145deg, #1a1a1a, #252525);
-    border: 1px solid var(--accent-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 0 20px rgba(8, 217, 214, 0.1);
-    animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: var(--surface-color);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.5s ease;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value-wrap {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.metric-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
+    transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .hidden {
