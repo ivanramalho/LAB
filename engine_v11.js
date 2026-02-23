@@ -1,4 +1,4 @@
-console.log("%c Creative Lab Engine v13 Initializing... ", "background: #111; color: #00ffcc; font-weight: bold;");
+console.log("%c Creative Lab Engine v16 Initializing... ", "background: #111; color: #00ffcc; font-weight: bold;");
 document.addEventListener('DOMContentLoaded', () => {
     // --- Interactive Background Lights ---
     const orbs = document.querySelectorAll('.orb');
@@ -897,20 +897,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function performScriptOptimization(text, style) {
             const raw = text.trim();
-            // Clean up the idea - remove double line breaks if any
             const idea = raw.replace(/\n\s*\n/g, '\n');
 
+            // Helper for industry-standard indents (Courier type layout)
+            const NAME = (n) => `\n\n${" ".repeat(25)}${n.toUpperCase()}`;
+            const DIAL = (d) => `\n${" ".repeat(12)}${d}`;
+            const PAREN = (p) => `\n${" ".repeat(18)}(${p})`;
+            const HR = "\n" + "━".repeat(45) + "\n";
+
             if (style === 'shortfillm') {
-                return `[PREMIUM SHORT FILM STRUCTURE]\nTitle: Untitled Lab Work\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nFADE IN:\n\nEXT. LOCATION - DAY\n\n[ACTION: The camera discovers the world first. Focus on a single sensory detail.]\n\n${idea.substring(0, idea.length / 2)}\n\nCHARACTER\n(internal struggle visible)\n"It's not what stays that hurts. It's what leaves."\n\nINT. LOCATION - CONTINUOUS\n\n[ACTION: Tension escalates. A confrontation occurs—even if it's just with an object.]\n\n${idea.substring(idea.length / 2)}\n\nCHARACTER\n"I'm done waiting for a reason."\n\n[ACTION: A definitive choice is made. Silence follows.]\n\nFADE TO BLACK.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nAGENCY NOTE: Remove camera directions. Let the actor's face tell the story.`;
+                return `[PREMIUM SCREENPLAY FORMAT]\nTITLE: LAB_CONCEPT_${Math.floor(Math.random() * 999)}\n${HR}\nFADE IN:\n\nEXT. WASTELAND OVERPASS - DAY\n\nStraddling the desert like a giant, crumbling monument. Silence, save for the wind. The world feels heavy.\n\n[ACTION: A character, ELI, enters the frame. He moves with a purpose that defies the heat.]\n\n${idea.substring(0, idea.length / 2)}\n${NAME("Eli")}${DIAL("It is not the path that is difficult.")}${DIAL("It is the first step.")}\n\n[ACTION: He stops. Looks back. The horizon is empty.]\n\nINT. ABANDONED SHELTER - LATER\n\n[ACTION: The shadows are long. Eli sets down his pack. There is a weight in his movements.]\n\n${idea.substring(idea.length / 2)}\n${NAME("Young Woman")}${PAREN("transfixed")}${DIAL("Where are you going?")}\n${NAME("Eli")}${DIAL("West.")}\n${NAME("Young Woman")}${DIAL("Can... can I come with you?")}\n\n[ACTION: He doesn't look at her. He just shoulders his pack again.]\n${NAME("Eli")}${DIAL("No.")}\n\nHe walks on, into the blinding light.\n\nFADE TO BLACK.\n${HR}\nAGENCY NOTE: Dialogue centered. Actions clean. Courier intent is mandatory.`;
             }
             if (style === 'animation') {
-                return `[ANIMATION DESIGN DOC & SCRIPT]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nVISUAL STYLE: [High-Contrast Stylized]\n\nSCENE 1\n\nVISUAL: A burst of abstract light that forms into a character.\nACTION: The character struggles against a physical law (gravity, time).\n\nDIALOGUE (V.O):\n"Logic is a suggestion. Energy is the truth."\n\nSCENE 2\n\nVISUAL: The background transforms as the character moves.\nACTION:\n${idea}\n\nSCENE 3\n\nVISUAL: A singular, frozen frame of impact.\nACTION: The character finds balance. Everything stabilizes.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTE: In animation, every line costs a budget. Keep it visual.`;
+                return `[ANIMATION DESIGN DOC & SCRIPT]\n${HR}\nSCENE 1 - TRANSFORMATION\n\n[ACTION: The frame is a void of high-contrast light. A character emerges, stylized and fluid.]\n\n${idea.substring(0, idea.length / 2)}\n${NAME("Creator")}${DIAL("Let there be logic in this chaos.")}\n\n[ACTION: The background shifts color—from deep indigo to neon green—with every word spoken.]\n\nSCENE 2 - THE DISRUPTION\n\n[ACTION: The character find a singular object. It vibrates with a frequency we can feel.]\n\n${idea.substring(idea.length / 2)}\n${NAME("Creator")}${PAREN("whisper")}${DIAL("It's time.")}\n\nFADE OUT.\n\n${HR}\nNOTE: Animation is literal. Every line costs budget. Keep it visual.`;
             }
             if (style === 'youtube') {
-                return `[RETENTION-FIRST YOUTUBE SCRIPT]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[00:00] THE "STAKES" HOOK\n"Stop scrolling. This one discovery about ${idea.substring(0, 30)}... will change everything."\n\n[00:15] THE CONTEXT\n"Most people think they know how this works. They're wrong."\n\n[00:45] THE MAIN SEGMENT\nACTION: Rapid-fire visual examples of:\n${idea}\n\n[03:00] THE "SECRET" TWIST\n"But here's the part nobody tells you about."\n\n[04:30] THE RESOLUTION & CTA\n"The answer was always right there. If you learned something, sub. Let's keep going."`;
+                return `[YOUTUBE RETENTION-MAX SCRIPT]\n${HR}\n[00:00] THE "STAKES" HOOK\n"Stop scrolling. This one discovery about ${idea.substring(0, 30)}... will change everything."\n\n[00:15] THE CONTEXT\n"Most people think they know how this works. They're wrong."\n\n[00:45] THE MAIN SEGMENT\nACTION: Rapid-fire visual examples of:\n${idea}\n\n[03:00] THE "SECRET" TWIST\n${NAME("Host")}${DIAL("But here's the part nobody tells you about.")}\n\n[04:30] THE RESOLUTION & CTA\n${NAME("Host")}${DIAL("The answer was always right there. Sub to stay in the loop.")}`;
             }
             // social
-            return `[VIRAL SOCIAL MEDIA TACTIC]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[0-3s] THE VISUAL HOOK\nTEXT ON SCREEN: "I bet you didn't know this."\nACTION: [High-speed action / Reveal]\n\n[3-15s] THE VALUE DROP\nVOICE OVER:\n"Everyone is talking about ${idea.substring(0, 20)}... but watch this."\n\n[15-45s] THE BREAKDOWN\n${idea}\n\n[45-55s] THE RESULT\nTEXT ON SCREEN: "Save for later."\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTE: Speed is retention. If you can say it in 3 words, don't use 10.`;
+            return `[SOCIAL MEDIA DISRUPTION PROTOCOL]\n${HR}\n[0-3s] THE VISUAL HOOK\nTEXT ON SCREEN: "Stop ignoring this."\nACTION: [High-speed action / Reveal]\n\n[3-15s] THE VALUE DROP\n${NAME("Voice Over")}${DIAL("I tested this for 30 days. Here is the result.")}\n\n[15-45s] THE BREAKDOWN\n${idea}\n\n[45-55s] THE CTA\nTEXT ON SCREEN: "Read the caption for the full breakdown. Save this."`;
         }
 
         document.getElementById('apply-script-enhance').addEventListener('click', () => {

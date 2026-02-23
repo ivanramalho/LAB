@@ -1177,9 +1177,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 #modal-body-text {
-    font-family: var(--font-body);
+    font-family: 'Courier New', Courier, monospace;
     font-size: 1.1rem;
-    line-height: 1.8;
+    line-height: 1.6;
     color: #e0e0e0;
     white-space: pre-wrap;
     margin-bottom: 2rem;
