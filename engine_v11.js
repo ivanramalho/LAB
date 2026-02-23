@@ -1,3 +1,4 @@
+console.log("%c Creative Lab Engine v12 Initializing... ", "background: #111; color: #00ffcc; font-weight: bold;");
 document.addEventListener('DOMContentLoaded', () => {
     // --- Interactive Background Lights ---
     const orbs = document.querySelectorAll('.orb');
@@ -958,7 +959,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Load project data for the first time
-        window.loadProjectData();
+        try {
+            window.loadProjectData();
+        } catch (e) {
+            console.error("[CreativeLab] Error restoring session:", e);
+        }
     }
 });
 
