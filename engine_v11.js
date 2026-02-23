@@ -1,4 +1,20 @@
 console.log("%c Creative Lab Engine v16 Initializing... ", "background: #111; color: #00ffcc; font-weight: bold;");
+
+// --- Firebase Initialization ---
+const firebaseConfig = {
+    apiKey: "AIzaSyBhUmUEH7ROc1zrdtNs6A6Po5Sa_S3rEbY",
+    authDomain: "creative-lab-f3116.firebaseapp.com",
+    projectId: "creative-lab-f3116",
+    storageBucket: "creative-lab-f3116.firebasestorage.app",
+    messagingSenderId: "9893343494",
+    appId: "1:9893343494:web:734cbd583cda63b3a22e87",
+    measurementId: "G-6L0ZEMJF8N"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Interactive Background Lights ---
     const orbs = document.querySelectorAll('.orb');
@@ -303,18 +319,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function saveConcepts() {
             localStorage.setItem(getConceptsKey(), JSON.stringify(concepts));
+            // Sync to Firestore
+            if (currentUser && currentProject) {
+                db.collection("users").doc(currentUser)
+                    .collection("projects").doc(currentProject)
+                    .set({ concepts: concepts }, { merge: true })
+                    .catch(e => console.error("[Firebase] Error saving concepts:", e));
+            }
         }
 
         function saveScripts() {
             localStorage.setItem(getScriptsKey(), JSON.stringify(scripts));
+            // Sync to Firestore
+            if (currentUser && currentProject) {
+                db.collection("users").doc(currentUser)
+                    .collection("projects").doc(currentProject)
+                    .set({ scripts: scripts }, { merge: true })
+                    .catch(e => console.error("[Firebase] Error saving scripts:", e));
+            }
         }
 
         // Load data for the CURRENT project (called every time user enters a project)
-        window.loadProjectData = function () {
+        window.loadProjectData = async function () {
+            // 1. Initial load from localStorage (Instant UI)
             concepts = JSON.parse(localStorage.getItem(getConceptsKey())) || [];
             scripts = JSON.parse(localStorage.getItem(getScriptsKey())) || [];
             renderConcepts();
             renderScripts();
+
+            // 2. Sync from Firestore (Cloud Source of Truth)
+            if (currentUser && currentProject) {
+                try {
+                    const doc = await db.collection("users").doc(currentUser)
+                        .collection("projects").doc(currentProject)
+                        .get();
+
+                    if (doc.exists) {
+                        const data = doc.data();
+                        let changed = false;
+
+                        // Merge logic: Cloud wins if local is empty or cloud has newer data
+                        if (data.concepts && data.concepts.length >= concepts.length) {
+                            concepts = data.concepts;
+                            localStorage.setItem(getConceptsKey(), JSON.stringify(concepts));
+                            changed = true;
+                        }
+                        if (data.scripts && data.scripts.length >= scripts.length) {
+                            scripts = data.scripts;
+                            localStorage.setItem(getScriptsKey(), JSON.stringify(scripts));
+                            changed = true;
+                        }
+
+                        if (changed) {
+                            renderConcepts();
+                            renderScripts();
+                            console.log("[Firebase] Data synchronized from cloud.");
+                        }
+                    } else {
+                        // If doc doesn't exist in cloud, but exists locally, perform initial push (migration)
+                        if (concepts.length > 0 || scripts.length > 0) {
+                            console.log("[Firebase] Performing initial cloud sync for new project...");
+                            saveConcepts();
+                            saveScripts();
+                        }
+                    }
+                } catch (e) {
+                    console.error("[Firebase] Sync error:", e);
+                }
+            }
+
             // Reset UI state
             analysisResult.classList.add('hidden');
             enhanceProposal.classList.add('hidden');
