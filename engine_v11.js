@@ -1,4 +1,4 @@
-console.log("%c Creative Lab Engine v12 Initializing... ", "background: #111; color: #00ffcc; font-weight: bold;");
+console.log("%c Creative Lab Engine v13 Initializing... ", "background: #111; color: #00ffcc; font-weight: bold;");
 document.addEventListener('DOMContentLoaded', () => {
     // --- Interactive Background Lights ---
     const orbs = document.querySelectorAll('.orb');
@@ -280,6 +280,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const scriptProposedText = document.getElementById('script-proposed-text');
         const scriptProposalDesc = document.getElementById('script-proposal-desc');
 
+        // --- Detail Modal Elements ---
+        const detailModal = document.getElementById('detail-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBodyText = document.getElementById('modal-body-text');
+        const modalAIText = document.getElementById('modal-ai-text');
+        const modalDateAuthor = document.getElementById('modal-date-author');
+        const modalDeleteBtn = document.getElementById('modal-delete-btn');
+        const modalMeta = document.getElementById('modal-meta');
+        const modalBadgeContainer = document.getElementById('modal-badge-container');
+
         // Module-level data — these are re-loaded on every project enter
         let concepts = [];
         let scripts = [];
@@ -560,33 +571,50 @@ document.addEventListener('DOMContentLoaded', () => {
             concepts.forEach(concept => {
                 const card = document.createElement('div');
                 card.className = 'card interactive-light';
+                // Make the card body clickable for the modal
                 card.innerHTML = `
-                    <button class="card-delete" onclick="deleteConcept(${concept.id})">&times;</button>
-                    <div class="card-header">
-                        <h3 class="card-title">${concept.title || 'Untitled Concept'}</h3>
-                        <span class="card-rating">${concept.rating}/10</span>
-                    </div>
-                    <div class="card-content-collapsed" id="concept-desc-${concept.id}">
-                        <p class="card-body" style="margin: 0;">${concept.desc || 'No description provided.'}</p>
-                    </div>
-                    <button class="card-expand-btn" onclick="toggleExpand('concept-desc-${concept.id}', this)">👁️ View Full Text</button>
-                    <div class="card-meta" style="color: var(--accent-color); margin-top: 0.5rem; font-size: 0.9rem;">
-                        AI Note: "${concept.feedback || 'Legacy concept'}"
+                    <div class="card-delete" title="Delete Concept" data-id="${concept.id}">&times;</div>
+                    <div class="card-clickable-area" data-type="concept" data-id="${concept.id}">
+                        <div class="card-header">
+                            <h3 class="card-title">${concept.title || 'Untitled Concept'}</h3>
+                            <span class="card-rating">${concept.rating}/10</span>
+                        </div>
+                        <div class="card-content-collapsed">
+                            <p class="card-body" style="margin: 0;">${concept.desc || 'No description provided.'}</p>
+                        </div>
+                        <div class="card-meta" style="color: var(--accent-color); margin-top: 0.5rem; font-size: 0.9rem;">
+                            AI Note: "${concept.feedback || 'Legacy concept'}"
+                        </div>
+                        <button class="card-expand-btn">👁️ View Full Analysis</button>
                     </div>
                     <div class="card-meta">
                         <span>Created: ${concept.date}</span>
                         <span style="float: right; color: var(--text-primary);">By ${concept.author || 'Unknown'}</span>
                     </div>
                 `;
+
+                // Add event listeners for delete and view
+                card.querySelector('.card-delete').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.deleteConcept(concept.id);
+                });
+
+                card.querySelector('.card-clickable-area').addEventListener('click', () => {
+                    openDetailModal('concept', concept);
+                });
+
                 conceptsList.appendChild(card);
             });
         }
 
         window.deleteConcept = (id) => {
-            if (confirm('Delete this concept?')) {
+            if (confirm('Permanently delete this concept from laboratory?')) {
                 concepts = concepts.filter(c => c.id !== id);
                 saveConcepts();
                 renderConcepts();
+                if (!detailModal.classList.contains('hidden')) {
+                    detailModal.classList.add('hidden');
+                }
             }
         };
 
@@ -918,43 +946,87 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = 'card interactive-light';
                 card.innerHTML = `
-                    <button class="card-delete" onclick="deleteScript(${script.id})">&times;</button>
-                    <div class="card-header">
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <h3 class="card-title">${script.title}</h3>
-                            <span class="badge" style="background: rgba(17, 218, 143, 0.1); color: var(--accent-color); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;">${styleName}</span>
+                    <div class="card-delete" title="Delete Script" data-id="${script.id}">&times;</div>
+                    <div class="card-clickable-area" data-type="script" data-id="${script.id}">
+                        <div class="card-header">
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <h3 class="card-title">${script.title}</h3>
+                                <span class="badge" style="background: rgba(17, 218, 143, 0.1); color: var(--accent-color); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;">${styleName}</span>
+                            </div>
                         </div>
+                        <p style="margin-bottom: 0.5rem; font-weight: bold; color: var(--text-secondary); font-size: 0.9rem;">Logline: ${script.logline}</p>
+                        <div class="card-content-collapsed">
+                            <p class="card-body" style="font-family: monospace; background: #111; padding: 1rem; border-radius: 6px; font-size: 0.85rem; line-height: 1.6; color: #ccc; margin: 0;">${script.body}</p>
+                        </div>
+                        <button class="card-expand-btn">👁️ View Full Script</button>
                     </div>
-                    <p style="margin-bottom: 0.5rem; font-weight: bold; color: var(--text-secondary); font-size: 0.9rem;">Logline: ${script.logline}</p>
-                    <div class="card-content-collapsed" id="script-body-${script.id}">
-                        <p class="card-body" style="font-family: monospace; background: #111; padding: 1rem; border-radius: 6px; font-size: 0.85rem; line-height: 1.6; color: #ccc; margin: 0;">${script.body}</p>
-                    </div>
-                    <button class="card-expand-btn" onclick="toggleExpand('script-body-${script.id}', this)">👁️ View Full Script</button>
                     <div class="card-meta">
                         <span>Created: ${script.date}</span>
                         <span style="float: right; color: var(--accent-color); opacity: 0.8;">By ${script.author || 'Creator'}</span>
                     </div>
                 `;
+
+                // Add event listeners for delete and view
+                card.querySelector('.card-delete').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.deleteScript(script.id);
+                });
+
+                card.querySelector('.card-clickable-area').addEventListener('click', () => {
+                    openDetailModal('script', script);
+                });
+
                 scriptsList.appendChild(card);
             });
         }
 
-        window.toggleExpand = (containerId, btn) => {
-            const container = document.getElementById(containerId);
-            if (container.classList.contains('card-content-collapsed')) {
-                container.classList.remove('card-content-collapsed');
-                btn.textContent = '🙈 Collapse Text';
+        // --- Modal Control Logic ---
+        function openDetailModal(type, item) {
+            modalTitle.textContent = item.title;
+            modalBodyText.textContent = item.body || item.desc;
+            modalAIText.textContent = item.feedback || (type === 'script' ? "Heuristic Analysis: Advanced Performance Logic applied." : "");
+            modalDateAuthor.innerHTML = `Created on ${item.date} by <strong>${item.author}</strong>`;
+
+            modalBadgeContainer.innerHTML = '';
+            if (type === 'script') {
+                const styleLabel = scriptCategories[item.style]?.label || 'Standard';
+                modalBadgeContainer.innerHTML = `<span class="badge" style="background: rgba(17, 218, 143, 0.1); color: var(--accent-color); padding: 4px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">${styleLabel}</span>`;
+                modalMeta.textContent = `Script Structure: ${item.logline}`;
             } else {
-                container.classList.add('card-content-collapsed');
-                btn.textContent = containerId.includes('script') ? '👁️ View Full Script' : '👁️ View Full Text';
+                modalBadgeContainer.innerHTML = `<span class="badge" style="background: rgba(33, 190, 255, 0.1); color: var(--accent-blue); padding: 4px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">CAMPAIGN CONCEPT</span>`;
+                modalMeta.textContent = `AI Score: ${item.rating}/10`;
             }
-        };
+
+            modalDeleteBtn.onclick = () => {
+                if (type === 'concept') window.deleteConcept(item.id);
+                else window.deleteScript(item.id);
+            };
+
+            detailModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        closeModalBtn.addEventListener('click', () => {
+            detailModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+
+        // Close on outside click
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                detailModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
 
         window.deleteScript = (id) => {
-            if (confirm('Delete this script?')) {
+            if (confirm('Permanently delete this script from laboratory?')) {
                 scripts = scripts.filter(s => s.id !== id);
                 saveScripts();
                 renderScripts();
+                if (!detailModal.classList.contains('hidden')) {
+                    detailModal.classList.add('hidden');
+                }
             }
         };
 

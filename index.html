@@ -267,7 +267,31 @@
         </section>
     </main>
 
-    <script src="engine_v11.js?v=12"></script>
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="modal-overlay hidden">
+        <div class="modal-container interactive-light">
+            <button id="close-modal" class="modal-close-btn">&times;</button>
+            <div class="modal-header">
+                <div id="modal-badge-container"></div>
+                <h2 id="modal-title">Concept Detail</h2>
+                <div id="modal-meta" class="modal-meta-top"></div>
+            </div>
+            <div class="modal-content">
+                <div id="modal-body-wrapper">
+                    <pre id="modal-body-text"></pre>
+                </div>
+                <div id="modal-ai-feedback" class="modal-ai-box">
+                    <p id="modal-ai-text"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-date-author"></div>
+                <button id="modal-delete-btn" class="btn-danger">Delete This Item</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="engine_v11.js?v=13"></script>
 </body>
 
 </html>
