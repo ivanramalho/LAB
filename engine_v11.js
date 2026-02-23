@@ -961,6 +961,4 @@ document.addEventListener('DOMContentLoaded', () => {
         window.loadProjectData();
     }
 });
-    });
-}
 
