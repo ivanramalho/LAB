@@ -167,6 +167,7 @@ header {
     padding: 1.5rem 5%;
     background-color: rgba(3, 3, 3, 0.5);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -201,6 +202,7 @@ header {
     text-transform: uppercase;
     letter-spacing: 1.5px;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     transition: all 0.3s ease;
 }
 
@@ -319,6 +321,7 @@ main {
 .input-panel {
     background-color: var(--glass-bg);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 2.5rem;
     border-radius: 20px;
     border: 1px solid var(--glass-border);
@@ -443,14 +446,44 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .display-panel::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: var(--accent-color);
     border-radius: 4px;
+    border: 2px solid var(--bg-color);
+}
+
+/* Firefox scrollbar */
+.display-panel {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--bg-color);
+}
+
+/* Global scrollbar standardization for modern browsers */
+@supports (scrollbar-color: auto) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-color) var(--bg-color);
+    }
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+    border: 1px solid var(--bg-color);
 }
 
 /* Cards */
 .card {
     background-color: var(--glass-bg);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     padding: 1.5rem;
@@ -525,6 +558,32 @@ input[type="range"]::-webkit-slider-thumb:hover {
     font-size: 0.95rem;
     white-space: pre-wrap;
     /* Preserve line breaks */
+    transition: all 0.3s ease;
+}
+
+.card-content-collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-expand-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    padding: 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+.card-expand-btn:hover {
+    text-decoration: underline;
 }
 
 .card-delete {
