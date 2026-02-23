@@ -859,9 +859,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Apply Hard Penalties and Caps
             const finalScores = baseScores.map(val => {
-                let finalVal = Math.round(val * baseDensityMultiplier - fluffPenalty);
+                let finalVal = val * baseDensityMultiplier - fluffPenalty;
 
-                // NO PLOT PENALTY: 50% reduction if no narrative tension is detected
+                // NO PLOT PENALTY: 60% reduction if no narrative tension is detected
                 if (!hasTruePlot) finalVal *= 0.4;
 
                 // THE MEIA-BOCA CAP: If no plot twist and heavy production fluff -> Max 35 (Cruel rigor)
@@ -872,7 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (tooLongForSocial) {
                     finalVal = Math.min(finalVal, 25);
                 }
-                return Math.max(1, finalVal);
+                return Math.max(1, Math.round(finalVal));
             });
 
             return { scores: finalScores, fluff: detectedFluff, tooLong: tooLongForSocial, wordDelta };
@@ -896,18 +896,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         function performScriptOptimization(text, style) {
-            const idea = text.trim();
+            const raw = text.trim();
+            // Clean up the idea - remove double line breaks if any
+            const idea = raw.replace(/\n\s*\n/g, '\n');
+
             if (style === 'shortfillm') {
-                return `PREMIUM SHORT FILM SCRIPT\nConcept: "${idea}"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSCENE 1 - EXT. [EVOCATIVE LOCATION] - [TIME]\n\n[Describe the mood through atmosphere, not camera directions. Focus on light and sound.]\n\nA figure, [CHARACTER], moves with intentional silence. They are searching for something the audience can\'t see yet.\n\n[ACTION: The character encounters a physical obstacle that mirrors their internal struggle.]\n\n${idea}\n\nCHARACTER\n(to themselves)\n"It isn\'t supposed to be this quiet."\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nSCENE 2 - INT. [CONTRASTING SPACE] - LATER\n\n[Tension peaks. The ordinary world is left behind.]\n\n[ACTION: A revelation occurs. Something hidden is revealed through a specific object or gesture.]\n\nCHARACTER\n"I thought I knew the way out."\n\n[ACTION: They make a choice that cannot be undone.]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nSCENE 3 - EXT/INT. [FINAL LOCATION]\n\n[The aftermath. The character is physically or emotionally altered.]\n\n[ACTION: Show the result of the choice. No dialogue needed here.]\n\nFADE TO BLACK.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nAGENCY NOTE: Remove all camera jargon. Focus on the emotional arc.`;
+                return `[PREMIUM SHORT FILM STRUCTURE]\nTitle: Untitled Lab Work\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nFADE IN:\n\nEXT. LOCATION - DAY\n\n[ACTION: The camera discovers the world first. Focus on a single sensory detail.]\n\n${idea.substring(0, idea.length / 2)}\n\nCHARACTER\n(internal struggle visible)\n"It's not what stays that hurts. It's what leaves."\n\nINT. LOCATION - CONTINUOUS\n\n[ACTION: Tension escalates. A confrontation occurs—even if it's just with an object.]\n\n${idea.substring(idea.length / 2)}\n\nCHARACTER\n"I'm done waiting for a reason."\n\n[ACTION: A definitive choice is made. Silence follows.]\n\nFADE TO BLACK.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nAGENCY NOTE: Remove camera directions. Let the actor's face tell the story.`;
             }
             if (style === 'animation') {
-                return `CONCEPT: "${idea}"\nSTYLE: [Modern Stylized Animation]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[BEAT 01: THE HOOK]\nVisuals: [Define a unique color palette - e.g., neon over monochrome].\nAction: A sequence of fluid, physics-defying movements.\n\n[BEAT 02: THE CORE]\n${idea}\nDialogue: "[One power-line that encapsulates the theme]"\n\n[BEAT 03: THE TWIST]\nVisuals: The world deconstructs or transforms to reveal a hidden layer.\nAction: The character adapts to the new reality with a singular, iconic pose.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTE: Animation is literal. If you write 'fast', show it through smears and frame-trailing. Avoid 'camera' talk.`;
+                return `[ANIMATION DESIGN DOC & SCRIPT]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nVISUAL STYLE: [High-Contrast Stylized]\n\nSCENE 1\n\nVISUAL: A burst of abstract light that forms into a character.\nACTION: The character struggles against a physical law (gravity, time).\n\nDIALOGUE (V.O):\n"Logic is a suggestion. Energy is the truth."\n\nSCENE 2\n\nVISUAL: The background transforms as the character moves.\nACTION:\n${idea}\n\nSCENE 3\n\nVISUAL: A singular, frozen frame of impact.\nACTION: The character finds balance. Everything stabilizes.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTE: In animation, every line costs a budget. Keep it visual.`;
             }
             if (style === 'youtube') {
-                return `YOUTUBE RETENTION-MAX SCRIPT\nTopic: "${idea}"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[00:00–00:10] THE "IMPOSSIBLE" HOOK\n"What if I told you that ${idea} is actually the opposite of what you think?"\nVisual: [Extreme foreground detail + high energy movement]\n\n[00:10–01:30] THE VALUE BRIDGE\n→ Fact: [Something unexpected]\n→ Pain point: "We all struggle with [X], but look at this..."\n\n[01:30–04:30] THE "SECRET" REVEAL\nIdentify the core mechanics of "${idea}".\nShow, don\'t just tell—use visual metaphors.\n\n[04:30–05:00] THE EXIT\n"The real truth isn\'t what we found, it\'s how we used it."\nCTA: "If you understood this, you\'re in the top 1%. Sub to stay there."`;
+                return `[RETENTION-FIRST YOUTUBE SCRIPT]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[00:00] THE "STAKES" HOOK\n"Stop scrolling. This one discovery about ${idea.substring(0, 30)}... will change everything."\n\n[00:15] THE CONTEXT\n"Most people think they know how this works. They're wrong."\n\n[00:45] THE MAIN SEGMENT\nACTION: Rapid-fire visual examples of:\n${idea}\n\n[03:00] THE "SECRET" TWIST\n"But here's the part nobody tells you about."\n\n[04:30] THE RESOLUTION & CTA\n"The answer was always right there. If you learned something, sub. Let's keep going."`;
             }
             // social
-            return `SOCIAL MEDIA - "VIRAL" STRUCTURE\nConcept: "${idea}"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[0-2s] THE PATTERN INTERRUPT\nVisual: [Start from the middle of a high-motion action]\nText: "Stop ignoring this."\n\n[2-10s] THE REVELATION\n${idea}\nVoice: "I tested this for 30 days. Here is the result."\n\n[10-25s] THE PROOF\n[Fast cuts - 0.5s each]\nVisual 1: [Problem]\nVisual 2: [Solution]\nVisual 3: [Result]\n\n[25-30s] THE CTA\n"Read the caption for the full breakdown. Save this."`;
+            return `[VIRAL SOCIAL MEDIA TACTIC]\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n[0-3s] THE VISUAL HOOK\nTEXT ON SCREEN: "I bet you didn't know this."\nACTION: [High-speed action / Reveal]\n\n[3-15s] THE VALUE DROP\nVOICE OVER:\n"Everyone is talking about ${idea.substring(0, 20)}... but watch this."\n\n[15-45s] THE BREAKDOWN\n${idea}\n\n[45-55s] THE RESULT\nTEXT ON SCREEN: "Save for later."\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNOTE: Speed is retention. If you can say it in 3 words, don't use 10.`;
         }
 
         document.getElementById('apply-script-enhance').addEventListener('click', () => {
