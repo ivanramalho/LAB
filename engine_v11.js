@@ -278,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const proposedTextElem = document.getElementById('proposed-text');
         const applyEnhanceBtn = document.getElementById('apply-enhancement');
         const discardEnhanceBtn = document.getElementById('discard-enhancement');
+        const fixConceptBtn = document.getElementById('fix-concept-btn');
 
         // --- Commercial Scripts ---
         const scriptForm = document.getElementById('script-form');
@@ -395,6 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
             scriptAnalysisResult.classList.add('hidden');
             scriptEnhanceProposal.classList.add('hidden');
             saveScriptBtn.style.display = 'none';
+            fixConceptBtn.style.display = 'none';
         };
 
         // Register all event listeners ONCE
@@ -429,6 +431,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         discardEnhanceBtn.addEventListener('click', () => enhanceProposal.classList.add('hidden'));
+
+        fixConceptBtn.addEventListener('click', () => {
+            const descInput = document.getElementById('concept-desc');
+            const desc = descInput.value.trim();
+            if (!desc) return;
+            fixConceptBtn.disabled = true;
+            fixConceptBtn.textContent = '✨ Improving...';
+            setTimeout(() => {
+                const result = performProfessionalOptimization(desc);
+                proposedTextElem.value = result;
+                enhanceProposal.classList.remove('hidden');
+                fixConceptBtn.disabled = false;
+                fixConceptBtn.textContent = '🛠️ Fix Concept Strategy';
+                enhanceProposal.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        });
 
         function performProfessionalOptimization(text) {
             const lowerText = text.toLowerCase();
@@ -519,6 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 analyzeBtn.disabled = false;
                 analysisResult.classList.remove('hidden');
                 saveBtn.style.display = 'block';
+                fixConceptBtn.style.display = 'block';
                 analysisResult.scrollIntoView({ behavior: 'smooth' });
             }, 1500);
         });
