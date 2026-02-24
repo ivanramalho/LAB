@@ -774,13 +774,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Actionable Social Media Rigor
                 if (isTooLong) {
-                    feedback = `🛑 REJEIÇÃO TÉCNICA: Roteiro excessivamente longo para ${category.label}. Vídeos para redes sociais morrem após 45 segundos. Remova pelo menos ${Math.round(result.wordDelta)} palavras para ter chance de retenção.`;
+                    feedback = `🛑 TECHNICAL REJECTION: Script is excessively long for ${category.label}. Social media videos lose engagement after 45 seconds. Remove at least ${Math.round(result.wordDelta)} words to improve retention.`;
                 }
 
                 // Add Heavy OBS for technical noise
                 if (fluffFound.length > 0) {
                     const list = fluffFound.map(f => `• ${f}`).join('\n');
-                    feedback += `\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🔴 PARA CORRIGIR (REMOVER RUÍDO):\n${list}\n\n💡 OBS: Roteiros profissionais são escritos para ATORES e EDITORES, não para máquinas. Decisões de câmera e equipamento poluem a leitura e demonstram amadorismo. Remova essas referências e foque na emoção/ação.`;
+                    feedback += `\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🔴 FIX REQUIRED (REMOVING NOISE):\n${list}\n\n💡 NOTE: Professional scripts are written for ACTORS and EDITORS, not machines. Camera and equipment technicalities clutter the reading and show amateurism. Remove these references and focus on emotion/action.`;
                 }
 
                 scriptAIFeedback.textContent = feedback;
