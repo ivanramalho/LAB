@@ -450,70 +450,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function performProfessionalOptimization(text) {
             const lowerText = text.toLowerCase();
+            const words = lowerText.split(/\s+/).filter(w => w.length > 2);
 
-            // 1. Strict Validation: Reject low-effort 'garbage' inputs
-            if (text.length < 15 || text.split(/\s+/).length < 3) {
+            // 1. Quick Rejection for shallow input
+            if (text.length < 15 || words.length < 3) {
                 return "REJECTION: Input too shallow for professional enhancement. Agency AI requires at least a basic concept (minimum 15 characters/3 words) to generate strategic value.";
             }
 
-            const strategies = [
+            // 2. Identify missing pillars for reconstruction
+            const targetMarkers = ['target', 'audiência', 'audiencia', 'público', 'persona', 'segmento', 'audience'];
+            const purposeMarkers = ['objetivo', 'desafio', 'meta', 'kpi', 'objective', 'purpose', 'goal'];
+            const insightMarkers = ['insight', 'verdade', 'tensão', 'tension', 'truth', 'comportamento', 'dilema', 'why', 'hábito'];
+            const innovationMarkers = ['stunt', 'ativacao', 'interactive', 'experience', 'disruptivo', 'digital', 'innovation'];
+
+            let missing = [];
+            if (!words.some(w => targetMarkers.some(m => w.includes(m)))) missing.push("Target Audience");
+            if (!words.some(w => purposeMarkers.some(m => w.includes(m)))) missing.push("Core Objective");
+            if (!words.some(w => insightMarkers.some(m => w.includes(m)))) missing.push("Strategic Insight");
+            if (!words.some(w => innovationMarkers.some(m => w.includes(m)))) missing.push("Creative Innovation");
+
+            // 3. Selective "Creative Twists" (Disruption Angles)
+            const twists = [
                 {
-                    key: "narrative",
-                    advice: "Disrupt the category through a non-linear narrative arc.",
-                    angles: [
-                        "Introduce a third-act revelation that flips the brand's perceived role.",
-                        "Ground the story in a character flaw that only the brand can resolve.",
-                        "Use a 'Revisionist History' lens to challenge established industry norms."
-                    ],
-                    render: (t, v) => `STRATEGIC REVISION: ${t}\n\nDIRECTION: ${v}\n\nACTION: Implement a 'Fourth Wall' break where the audience is invited to deconstruct the message.`
+                    key: "The Narrative Flip",
+                    act: "Subvert the category's traditional 'happy ending' with a raw, honest realization that centers the brand as a silent partner in resilience."
                 },
                 {
-                    key: "digital",
-                    advice: "Scale through a digital-first interactive ecosystem.",
-                    angles: [
-                        "Create a gamified community challenge that rewards brand-centric creativity.",
-                        "Deploy a custom AR filter that transforms ordinary moments into brand experiences.",
-                        "Integrate a 'Dark Social' strategy using exclusive messaging channels for top advocates."
-                    ],
-                    render: (t, v) => `DIGITAL ECOSYSTEM: ${t}\n\nOPPORTUNITY: ${v}\n\nTECH-STACK: High-fidelity AR assets and a decentralized community ledger.`
+                    key: "The Digital Stunt",
+                    act: "Deploy a 'ghost' experience—a digital intervention where the brand interrupts high-noise environments (like social scroll) with a moment of forced tranquility."
                 },
                 {
-                    key: "sensory",
-                    advice: "Elevate the visualization through visceral sensory triggers.",
-                    angles: [
-                        "Utilize macro cinematography and ASMR-grade sound design for physical impact.",
-                        "Implement a minimalist palette that emphasizes product texture and premium weight.",
-                        "Focus on the 'Iconic Void'—letting the product breathe in a high-contrast environment."
-                    ],
-                    render: (t, v) => `SENSORY UPGRADE: ${v}\n\nVISUAL CORE: ${t.substring(0, 30)}... re-imagined through high-speed phantom photography.`
+                    key: "The Human Tension",
+                    act: "Pivot from selling a solution to exposing a shared 'Guilty Secret' that the audience feels but never says. The brand becomes the permission to be real."
                 },
                 {
-                    key: "human",
-                    advice: "Anchor the concept in a deeper, unarticulated human truth.",
-                    angles: [
-                        "Shift focus from features to the universal fear of missing out on connection.",
-                        "Mirror a common daily frustration and show the brand as the unexpected silence.",
-                        "Ground the concept in a cultural tension that the brand dares to address directly."
-                    ],
-                    render: (t, v) => `HUMAN TRUTH: ${v}\n\nCONCEPT REFINED: ${t}\n\nNOTE: Move from 'selling' a product to 'solving' a behavioral dilemma.`
-                },
-                {
-                    key: "meta",
-                    advice: "Deconstruct the advertising medium itself for higher authenticity.",
-                    angles: [
-                        "Acknowledge the consumer's cynicism by being brutally honest about the brand's goal.",
-                        "Use a 'behind-the-scenes' aesthetic that feels unpolished and authentic.",
-                        "Avert standard tropes by creating a parody of the brand's own category."
-                    ],
-                    render: (t, v) => `META DIRECTION: ${v}\n\nREFINED WORK: ${t}\n\nSTRATEGY: Build trust through radical transparency.`
+                    key: "The Sensory Void",
+                    act: "Strip the creative of all music and dialogue. Rely purely on macro-visuals and ASMR soundscapes to create a high-contrast physical reaction to the brand."
                 }
             ];
 
-            // Match keyword or pick random
-            let strategy = strategies.find(s => lowerText.includes(s.key)) || strategies[Math.floor(Math.random() * strategies.length)];
-            let specificAngle = strategy.angles[Math.floor(Math.random() * strategy.angles.length)];
+            const selectedTwist = twists[Math.floor(Math.random() * twists.length)];
 
-            return strategy.render(text, specificAngle);
+            // 4. Reconstruction into Professional Brief
+            let brief = `[CANNES-LEVEL STRATEGIC RECONSTRUCTION]\n`;
+            brief += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            brief += `PROJECT CORE: ${text.substring(0, 100)}${text.length > 100 ? '...' : ''}\n\n`;
+
+            brief += `1. THE PERSONA (Target Bridge):\n`;
+            brief += `Instead of generic profiling, we target the 'Cynical Advocate'—the user who loves the category but hates the advertising. We meet them in their moments of highest friction.\n\n`;
+
+            brief += `2. THE HUMAN INSIGHT:\n`;
+            brief += `People don't want your product; they want the version of themselves that doesn't need to worry about the problem your product solves. We focus on the 'Relief' not the 'Feature'.\n\n`;
+
+            brief += `3. THE CREATIVE DISRUPTION:\n`;
+            brief += `ANGLE: ${selectedTwist.key}\n`;
+            brief += `EXECUTION: ${selectedTwist.act}\n\n`;
+
+            brief += `4. KPI & IMPACT:\n`;
+            brief += `Move the needle from 'Recall' to 'Relevance'. Success is defined by the audience sharing the campaign not as an ad, but as a cultural point of view.\n\n`;
+
+            if (missing.length > 0) {
+                brief += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                brief += `💡 GAP FIX: Your original concept was missing focus on: ${missing.join(", ")}. These have been integrated into this professional brief.`;
+            }
+
+            return brief;
         }
 
         analyzeBtn.addEventListener('click', () => {
